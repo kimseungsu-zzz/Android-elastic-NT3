@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:dot_cast/dot_cast.dart';
 import 'package:provider/provider.dart';
 
-import 'package:elastic_dashboard/services/nt4_client.dart';
+import 'package:elastic_dashboard/services/nt3_client.dart';
 import 'package:elastic_dashboard/widgets/nt_widgets/nt_widget.dart';
 
 class RelayModel extends MultiTopicNTWidgetModel {
@@ -12,12 +12,12 @@ class RelayModel extends MultiTopicNTWidgetModel {
 
   String get valueTopicName => '$topic/Value';
 
-  late NT4Subscription valueSubscription;
+  late NT3Subscription valueSubscription;
 
   @override
-  List<NT4Subscription> get subscriptions => [valueSubscription];
+  List<NT3Subscription> get subscriptions => [valueSubscription];
 
-  NT4Topic? valueTopic;
+  NT3Topic? valueTopic;
 
   final List<String> selectedOptions = ['Off', 'On', 'Forward', 'Reverse'];
 

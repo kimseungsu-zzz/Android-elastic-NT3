@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:dot_cast/dot_cast.dart';
 import 'package:provider/provider.dart';
 
-import 'package:elastic_dashboard/services/nt4_client.dart';
-import 'package:elastic_dashboard/services/nt4_type.dart';
+import 'package:elastic_dashboard/services/nt3_client.dart';
+import 'package:elastic_dashboard/services/nt3_type.dart';
 import 'package:elastic_dashboard/widgets/nt_widgets/nt_widget.dart';
 
 class SplitButtonChooserModel extends MultiTopicNTWidgetModel {
@@ -16,13 +16,13 @@ class SplitButtonChooserModel extends MultiTopicNTWidgetModel {
   String get activeTopicName => '$topic/active';
   String get defaultTopicName => '$topic/default';
 
-  late NT4Subscription optionsSubscription;
-  late NT4Subscription selectedSubscription;
-  late NT4Subscription activeSubscription;
-  late NT4Subscription defaultSubscription;
+  late NT3Subscription optionsSubscription;
+  late NT3Subscription selectedSubscription;
+  late NT3Subscription activeSubscription;
+  late NT3Subscription defaultSubscription;
 
   @override
-  List<NT4Subscription> get subscriptions => [
+  List<NT3Subscription> get subscriptions => [
     optionsSubscription,
     selectedSubscription,
     activeSubscription,
@@ -36,7 +36,7 @@ class SplitButtonChooserModel extends MultiTopicNTWidgetModel {
   String? previousActive;
   List<String>? previousOptions;
 
-  NT4Topic? _selectedTopic;
+  NT3Topic? _selectedTopic;
 
   SplitButtonChooserModel({
     required super.ntConnection,
@@ -155,7 +155,7 @@ class SplitButtonChooserModel extends MultiTopicNTWidgetModel {
       return;
     }
 
-    NT4Topic? existing = ntConnection.getTopicFromName(selectedTopicName);
+    NT3Topic? existing = ntConnection.getTopicFromName(selectedTopicName);
 
     if (existing != null) {
       existing.properties.addAll({'retained': true});
@@ -164,7 +164,7 @@ class SplitButtonChooserModel extends MultiTopicNTWidgetModel {
     } else {
       _selectedTopic = ntConnection.publishNewTopic(
         selectedTopicName,
-        NT4Type.string(),
+        NT3Type.string(),
         properties: {'retained': true},
       );
     }
@@ -179,7 +179,7 @@ class SplitButtonChooserModel extends MultiTopicNTWidgetModel {
   }
 
   void publishSelectedValue(String? selected, [bool initial = false]) {
-    if (selected == null || !ntConnection.isNT4Connected) {
+    if (selected == null || !ntConnection.isNT3Connected) {
       return;
     }
 

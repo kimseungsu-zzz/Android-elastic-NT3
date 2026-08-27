@@ -53,10 +53,6 @@ flutter build <PLATFORM>
     * Linux: `<PROJECT DIR>/build/linux/x64/release/bundle`
     * Web: `<PROJECT DIR>/build/web`
 
-### Robot Code Library
-
-The `elasticlib` directory contains a small robot code library written in C++, Java, and Python. Contributions to this part of the project are also welcome.
-
 ## Running Unit Tests
 
 Elastic uses the [Flutter unit test](https://docs.flutter.dev/testing/overview) library and [Mockito](https://pub.dev/packages/mockito) for unit testing.

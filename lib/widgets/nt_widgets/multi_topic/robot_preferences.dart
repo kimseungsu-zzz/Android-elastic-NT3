@@ -4,8 +4,8 @@ import 'package:dot_cast/dot_cast.dart';
 import 'package:provider/provider.dart';
 import 'package:searchable_listview/searchable_listview.dart';
 
-import 'package:elastic_dashboard/services/nt4_client.dart';
-import 'package:elastic_dashboard/services/nt4_type.dart';
+import 'package:elastic_dashboard/services/nt3_client.dart';
+import 'package:elastic_dashboard/services/nt3_type.dart';
 import 'package:elastic_dashboard/widgets/nt_widgets/nt_widget.dart';
 
 class RobotPreferencesModel extends MultiTopicNTWidgetModel {
@@ -16,16 +16,16 @@ class RobotPreferencesModel extends MultiTopicNTWidgetModel {
 
   final List<String> preferenceTopicNames = [];
 
-  final Map<String, NT4Subscription> preferenceSubscriptions = {};
+  final Map<String, NT3Subscription> preferenceSubscriptions = {};
   final Map<String, VoidCallback> subscriptionListeners = {};
 
-  final Map<String, NT4Topic> preferenceTopics = {};
+  final Map<String, NT3Topic> preferenceTopics = {};
   final Map<String, TextEditingController> preferenceTextControllers = {};
   final Map<String, Object?> previousValues = {};
 
-  late Function(NT4Topic topic) topicAnnounceListener;
+  late Function(NT3Topic topic) topicAnnounceListener;
 
-  late Function(NT4Topic topic) topicUnannounceListener;
+  late Function(NT3Topic topic) topicUnannounceListener;
 
   PreferenceSearch? searchWidget;
 
@@ -85,7 +85,7 @@ class RobotPreferencesModel extends MultiTopicNTWidgetModel {
 
   @override
   void resetSubscription() {
-    for (NT4Subscription subscription in preferenceSubscriptions.values) {
+    for (NT3Subscription subscription in preferenceSubscriptions.values) {
       destroySubscription(subscription.topic);
     }
     preferenceSubscriptions.clear();
@@ -104,7 +104,7 @@ class RobotPreferencesModel extends MultiTopicNTWidgetModel {
   void initSubscription(String topicName) {
     Object? previousValue = ntConnection.getLastAnnouncedValue(topicName);
 
-    NT4Subscription subscription = ntConnection.subscribe(
+    NT3Subscription subscription = ntConnection.subscribe(
       topicName,
       super.period,
     );
@@ -124,7 +124,7 @@ class RobotPreferencesModel extends MultiTopicNTWidgetModel {
   }
 
   void destroySubscription(String topicName) {
-    NT4Subscription? subscription = preferenceSubscriptions[topicName];
+    NT3Subscription? subscription = preferenceSubscriptions[topicName];
     if (subscription == null) {
       return;
     }
@@ -164,34 +164,30 @@ class RobotPreferences extends NTWidget {
 
     return PreferenceSearch(
       onSubmit: (String topic, String? data) {
-        NT4Topic? nt4Topic = model.preferenceTopics[topic];
+        NT3Topic? nt3Topic = model.preferenceTopics[topic];
 
-        if (nt4Topic == null ||
-            !model.ntConnection.isTopicPublished(nt4Topic)) {
+        if (nt3Topic == null ||
+            !model.ntConnection.isTopicPublished(nt3Topic)) {
           return;
         }
 
         if (data == null) {
-          model.ntConnection.unpublishTopic(nt4Topic);
+          model.ntConnection.unpublishTopic(nt3Topic);
           return;
         }
 
         Object? formattedData;
 
-        NT4Type dataType = nt4Topic.type;
+        NT3Type dataType = nt3Topic.type;
 
         switch (dataType.dataType) {
-          case NT4DataType.boolean:
+          case NT3DataType.boolean:
             formattedData = bool.tryParse(data);
             break;
-          case NT4DataType.float32:
-          case NT4DataType.float64:
+          case NT3DataType.float64:
             formattedData = double.tryParse(data);
             break;
-          case NT4DataType.int32:
-            formattedData = int.tryParse(data);
-            break;
-          case NT4DataType.string:
+          case NT3DataType.string:
             formattedData = data;
             break;
           default:
@@ -202,12 +198,12 @@ class RobotPreferences extends NTWidget {
           model.preferenceTextControllers[topic]?.text = model
               .previousValues[topic]
               .toString();
-          model.ntConnection.unpublishTopic(nt4Topic);
+          model.ntConnection.unpublishTopic(nt3Topic);
           return;
         }
 
-        model.ntConnection.updateDataFromTopic(nt4Topic, formattedData);
-        model.ntConnection.unpublishTopic(nt4Topic);
+        model.ntConnection.updateDataFromTopic(nt3Topic, formattedData);
+        model.ntConnection.unpublishTopic(nt3Topic);
 
         model.preferenceTextControllers[topic]?.text = formattedData.toString();
       },
@@ -257,13 +253,13 @@ class PreferenceSearch extends StatelessWidget {
         label: item.split('/').last,
         textController: textController ?? TextEditingController(),
         onFocusGained: () {
-          NT4Topic? nt4Topic = model.preferenceTopics[item];
+          NT3Topic? nt3Topic = model.preferenceTopics[item];
 
-          if (nt4Topic == null) {
+          if (nt3Topic == null) {
             return;
           }
 
-          model.ntConnection.publishTopic(nt4Topic);
+          model.ntConnection.publishTopic(nt3Topic);
         },
         onSubmit: (data) {
           onSubmit.call(item, data);

@@ -29,7 +29,7 @@ void main() {
 
     await widgetTester.pumpWidget(
       Elastic(
-        ntConnection: createMockOfflineNT4(),
+        ntConnection: createMockOfflineNT3(),
         preferences: preferences,
         version: '0.0.0.0',
       ),

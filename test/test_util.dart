@@ -6,109 +6,101 @@ import 'package:http/http.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 
-import 'package:elastic_dashboard/services/nt4_client.dart';
-import 'package:elastic_dashboard/services/nt4_type.dart';
+import 'package:elastic_dashboard/services/nt3_client.dart';
+import 'package:elastic_dashboard/services/nt3_type.dart';
 import 'package:elastic_dashboard/services/nt_connection.dart';
-import 'package:elastic_dashboard/services/struct_schemas/nt_struct.dart';
 import 'package:elastic_dashboard/services/update_checker.dart';
 import 'test_util.mocks.dart';
 
 @GenerateNiceMocks([
   MockSpec<NTConnection>(),
-  MockSpec<NT4Client>(),
-  MockSpec<NT4Subscription>(),
+  MockSpec<NT3Client>(),
+  MockSpec<NT3Subscription>(),
 ])
-MockNTConnection createMockOfflineNT4() {
+MockNTConnection createMockOfflineNT3() {
   HttpOverrides.global = null;
 
-  final mockNT4Connection = MockNTConnection();
-  final mockSubscription = MockNT4Subscription();
+  final mockNT3Connection = MockNTConnection();
+  final mockSubscription = MockNT3Subscription();
 
-  when(mockNT4Connection.schemaManager).thenReturn(SchemaManager());
-
-  when(mockNT4Connection.announcedTopics()).thenReturn({});
+  when(mockNT3Connection.announcedTopics()).thenReturn({});
 
   when(mockSubscription.periodicStream()).thenAnswer((_) => Stream.value(null));
 
   when(mockSubscription.listen(any)).thenAnswer((invocation) {});
 
-  when(mockNT4Connection.ntConnected).thenReturn(ValueNotifier(false));
-  when(mockNT4Connection.isNT4Connected).thenReturn(false);
+  when(mockNT3Connection.ntConnected).thenReturn(ValueNotifier(false));
+  when(mockNT3Connection.isNT3Connected).thenReturn(false);
 
-  when(mockNT4Connection.serverTime).thenReturn(0);
+  when(mockNT3Connection.serverTime).thenReturn(0);
 
   when(
-    mockNT4Connection.connectionStatus(),
+    mockNT3Connection.connectionStatus(),
   ).thenAnswer((_) => Stream.value(false));
 
-  when(mockNT4Connection.dsConnected).thenReturn(ValueNotifier(false));
-  when(mockNT4Connection.isDSConnected).thenReturn(false);
-  when(mockNT4Connection.dsHeight).thenReturn(ValueNotifier(null));
-  when(mockNT4Connection.dsIpAddress).thenReturn(ValueNotifier(null));
+  when(mockNT3Connection.dsConnected).thenReturn(ValueNotifier(false));
+  when(mockNT3Connection.isDSConnected).thenReturn(false);
+  when(mockNT3Connection.dsHeight).thenReturn(ValueNotifier(null));
+  when(mockNT3Connection.dsIpAddress).thenReturn(ValueNotifier(null));
 
-  when(mockNT4Connection.latencyStream()).thenAnswer((_) => Stream.value(0));
+  when(mockNT3Connection.latencyStream()).thenAnswer((_) => Stream.value(0));
 
-  when(mockNT4Connection.getLastAnnouncedValue(any)).thenReturn(null);
+  when(mockNT3Connection.getLastAnnouncedValue(any)).thenReturn(null);
 
   when(
-    mockNT4Connection.subscribeWithOptions(any, any),
+    mockNT3Connection.subscribeWithOptions(any, any),
   ).thenReturn(mockSubscription);
 
-  when(mockNT4Connection.subscribe(any, any)).thenReturn(mockSubscription);
+  when(mockNT3Connection.subscribe(any, any)).thenReturn(mockSubscription);
 
-  when(mockNT4Connection.subscribe(any)).thenReturn(mockSubscription);
+  when(mockNT3Connection.subscribe(any)).thenReturn(mockSubscription);
 
-  when(mockNT4Connection.subscribeAll(any, any)).thenReturn(mockSubscription);
+  when(mockNT3Connection.subscribeAll(any, any)).thenReturn(mockSubscription);
 
-  when(mockNT4Connection.getTopicFromName(any)).thenReturn(null);
+  when(mockNT3Connection.getTopicFromName(any)).thenReturn(null);
 
-  return mockNT4Connection;
+  return mockNT3Connection;
 }
 
-MockNTConnection createMockOnlineNT4({
-  List<NT4Topic>? virtualTopics,
+MockNTConnection createMockOnlineNT3({
+  List<NT3Topic>? virtualTopics,
   Map<String, dynamic>? virtualValues,
   int serverTime = 0,
-  SchemaManager? schemaManager,
 }) {
   HttpOverrides.global = null;
 
-  final mockNT4Connection = MockNTConnection();
-  final mockSubscription = MockNT4Subscription();
+  final mockNT3Connection = MockNTConnection();
+  final mockSubscription = MockNT3Subscription();
 
   virtualTopics ??= [
-    NT4Topic(
+    NT3Topic(
       name: '/SmartDashboard/Test Value 1',
-      type: NT4Type.int(),
+      type: NT3Type.double(),
       properties: {},
     ),
-    NT4Topic(
+    NT3Topic(
       name: '/SmartDashboard/Test Value 2',
-      type: NT4Type.float(),
+      type: NT3Type.double(),
       properties: {},
     ),
   ];
 
   virtualValues ??= {};
 
-  schemaManager ??= SchemaManager();
-
-  when(mockNT4Connection.schemaManager).thenReturn(schemaManager);
-
-  Map<int, NT4Topic> virtualTopicsMap = {};
+  Map<int, NT3Topic> virtualTopicsMap = {};
 
   for (int i = 0; i < virtualTopics.length; i++) {
     virtualTopicsMap.addAll({i + 1: virtualTopics[i]});
   }
 
-  List<NT4Topic> publishedTopics = [];
+  List<NT3Topic> publishedTopics = [];
 
-  when(mockNT4Connection.announcedTopics()).thenReturn(virtualTopicsMap);
+  when(mockNT3Connection.announcedTopics()).thenReturn(virtualTopicsMap);
 
-  when(mockNT4Connection.addTopicAnnounceListener(any)).thenAnswer((
+  when(mockNT3Connection.addTopicAnnounceListener(any)).thenAnswer((
     invocation,
   ) {
-    for (NT4Topic topic in virtualTopics!) {
+    for (NT3Topic topic in virtualTopics!) {
       invocation.positionalArguments[0].call(topic);
     }
   });
@@ -117,44 +109,44 @@ MockNTConnection createMockOnlineNT4({
 
   when(mockSubscription.listen(any)).thenAnswer((_) {});
 
-  when(mockNT4Connection.ntConnected).thenReturn(ValueNotifier(true));
-  when(mockNT4Connection.isNT4Connected).thenReturn(true);
+  when(mockNT3Connection.ntConnected).thenReturn(ValueNotifier(true));
+  when(mockNT3Connection.isNT3Connected).thenReturn(true);
 
-  when(mockNT4Connection.serverTime).thenReturn(serverTime);
+  when(mockNT3Connection.serverTime).thenReturn(serverTime);
 
   when(
-    mockNT4Connection.connectionStatus(),
+    mockNT3Connection.connectionStatus(),
   ).thenAnswer((_) => Stream.value(true));
 
-  when(mockNT4Connection.dsConnected).thenReturn(ValueNotifier(true));
-  when(mockNT4Connection.isDSConnected).thenReturn(true);
-  when(mockNT4Connection.dsHeight).thenReturn(ValueNotifier(null));
-  when(mockNT4Connection.dsIpAddress).thenReturn(ValueNotifier(null));
+  when(mockNT3Connection.dsConnected).thenReturn(ValueNotifier(true));
+  when(mockNT3Connection.isDSConnected).thenReturn(true);
+  when(mockNT3Connection.dsHeight).thenReturn(ValueNotifier(null));
+  when(mockNT3Connection.dsIpAddress).thenReturn(ValueNotifier(null));
 
-  when(mockNT4Connection.latencyStream()).thenAnswer((_) => Stream.value(0));
+  when(mockNT3Connection.latencyStream()).thenAnswer((_) => Stream.value(0));
 
-  when(mockNT4Connection.getLastAnnouncedValue(any)).thenReturn(null);
+  when(mockNT3Connection.getLastAnnouncedValue(any)).thenReturn(null);
 
   when(
-    mockNT4Connection.subscribeWithOptions(any, any),
+    mockNT3Connection.subscribeWithOptions(any, any),
   ).thenReturn(mockSubscription);
 
-  when(mockNT4Connection.subscribe(any, any)).thenReturn(mockSubscription);
+  when(mockNT3Connection.subscribe(any, any)).thenReturn(mockSubscription);
 
-  when(mockNT4Connection.subscribe(any)).thenReturn(mockSubscription);
+  when(mockNT3Connection.subscribe(any)).thenReturn(mockSubscription);
 
-  when(mockNT4Connection.subscribeAll(any, any)).thenReturn(mockSubscription);
+  when(mockNT3Connection.subscribeAll(any, any)).thenReturn(mockSubscription);
 
-  when(mockNT4Connection.getTopicFromName(any)).thenReturn(null);
+  when(mockNT3Connection.getTopicFromName(any)).thenReturn(null);
 
   when(
-    mockNT4Connection.publishNewTopic(
+    mockNT3Connection.publishNewTopic(
       any,
       any,
       properties: anyNamed('properties'),
     ),
   ).thenAnswer((invocation) {
-    NT4Topic newTopic = NT4Topic(
+    NT3Topic newTopic = NT3Topic(
       name: invocation.positionalArguments[0],
       type: invocation.positionalArguments[1],
       properties: invocation.positionalArguments.length >= 3
@@ -167,28 +159,28 @@ MockNTConnection createMockOnlineNT4({
     return newTopic;
   });
 
-  when(mockNT4Connection.publishTopic(any)).thenAnswer((invocation) {
+  when(mockNT3Connection.publishTopic(any)).thenAnswer((invocation) {
     publishedTopics.add(invocation.positionalArguments[0]);
   });
 
-  when(mockNT4Connection.unpublishTopic(any)).thenAnswer((invocation) {
+  when(mockNT3Connection.unpublishTopic(any)).thenAnswer((invocation) {
     publishedTopics.remove(invocation.positionalArguments[0]);
   });
 
-  when(mockNT4Connection.isTopicPublished(any)).thenAnswer(
+  when(mockNT3Connection.isTopicPublished(any)).thenAnswer(
     (invocation) => publishedTopics.contains(invocation.positionalArguments[0]),
   );
 
-  when(mockNT4Connection.updateDataFromTopic(any, any)).thenAnswer((
+  when(mockNT3Connection.updateDataFromTopic(any, any)).thenAnswer((
     invocation,
   ) {
-    NT4Topic topic = invocation.positionalArguments[0];
+    NT3Topic topic = invocation.positionalArguments[0];
     Object? data = invocation.positionalArguments[1];
 
     virtualValues![topic.name] = data;
   });
 
-  when(mockNT4Connection.updateDataFromTopicName(any, any)).thenAnswer((
+  when(mockNT3Connection.updateDataFromTopicName(any, any)).thenAnswer((
     invocation,
   ) {
     String topic = invocation.positionalArguments[0];
@@ -197,11 +189,11 @@ MockNTConnection createMockOnlineNT4({
     virtualValues![topic] = data;
   });
 
-  for (NT4Topic topic in virtualTopics) {
+  for (NT3Topic topic in virtualTopics) {
     List<Function(Object?, int)> subscriptionListeners = [];
     List<void Function()> subscriptionNotifiers = [];
 
-    MockNT4Subscription topicSubscription = MockNT4Subscription();
+    MockNT3Subscription topicSubscription = MockNT3Subscription();
 
     when(topicSubscription.topic).thenReturn(topic.name);
 
@@ -222,14 +214,14 @@ MockNTConnection createMockOnlineNT4({
       subscriptionNotifiers.remove(invocation.positionalArguments[0]);
     });
 
-    when(mockNT4Connection.updateDataFromTopic(topic, any)).thenAnswer((
+    when(mockNT3Connection.updateDataFromTopic(topic, any)).thenAnswer((
       invocation,
     ) {
       virtualValues![topic.name] = invocation.positionalArguments[1];
       topicSubscription.updateValue(invocation.positionalArguments[1], 0);
     });
 
-    when(mockNT4Connection.updateDataFromTopicName(topic.name, any)).thenAnswer(
+    when(mockNT3Connection.updateDataFromTopicName(topic.name, any)).thenAnswer(
       (invocation) {
         virtualValues![topic.name] = invocation.positionalArguments[1];
         topicSubscription.updateValue(invocation.positionalArguments[1], 0);
@@ -237,13 +229,13 @@ MockNTConnection createMockOnlineNT4({
     );
 
     when(
-      mockNT4Connection.updateDataFromSubscription(topicSubscription, any),
+      mockNT3Connection.updateDataFromSubscription(topicSubscription, any),
     ).thenAnswer((invocation) {
       virtualValues![topic.name] = invocation.positionalArguments[1];
       topicSubscription.updateValue(invocation.positionalArguments[1], 0);
     });
 
-    when(mockNT4Connection.getTopicFromName(topic.name)).thenReturn(topic);
+    when(mockNT3Connection.getTopicFromName(topic.name)).thenReturn(topic);
 
     when(
       topicSubscription.periodicStream(yieldAll: anyNamed('yieldAll')),
@@ -265,23 +257,23 @@ MockNTConnection createMockOnlineNT4({
     });
 
     when(
-      mockNT4Connection.getLastAnnouncedValue(topic.name),
+      mockNT3Connection.getLastAnnouncedValue(topic.name),
     ).thenAnswer((_) => virtualValues![topic.name]);
 
     when(
-      mockNT4Connection.subscribeWithOptions(topic.name, any),
+      mockNT3Connection.subscribeWithOptions(topic.name, any),
     ).thenAnswer((_) => topicSubscription);
 
     when(
-      mockNT4Connection.subscribe(topic.name, any),
+      mockNT3Connection.subscribe(topic.name, any),
     ).thenAnswer((_) => topicSubscription);
 
     when(
-      mockNT4Connection.subscribeAll(topic.name, any),
+      mockNT3Connection.subscribeAll(topic.name, any),
     ).thenAnswer((_) => topicSubscription);
   }
 
-  return mockNT4Connection;
+  return mockNT3Connection;
 }
 
 @GenerateNiceMocks([MockSpec<UpdateChecker>()])

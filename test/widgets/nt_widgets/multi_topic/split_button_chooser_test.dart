@@ -4,8 +4,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:elastic_dashboard/services/nt4_client.dart';
-import 'package:elastic_dashboard/services/nt4_type.dart';
+import 'package:elastic_dashboard/services/nt3_client.dart';
+import 'package:elastic_dashboard/services/nt3_type.dart';
 import 'package:elastic_dashboard/services/nt_connection.dart';
 import 'package:elastic_dashboard/services/nt_widget_registry.dart';
 import 'package:elastic_dashboard/widgets/nt_widgets/multi_topic/split_button_chooser.dart';
@@ -27,26 +27,26 @@ void main() {
     SharedPreferences.setMockInitialValues({});
     preferences = await SharedPreferences.getInstance();
 
-    ntConnection = createMockOnlineNT4(
+    ntConnection = createMockOnlineNT3(
       virtualTopics: [
-        NT4Topic(
+        NT3Topic(
           name: 'Test/Split Button Chooser/options',
-          type: NT4Type.array(NT4Type.string()),
+          type: NT3Type.array(NT3Type.string()),
           properties: {},
         ),
-        NT4Topic(
+        NT3Topic(
           name: 'Test/Split Button Chooser/active',
-          type: NT4Type.string(),
+          type: NT3Type.string(),
           properties: {},
         ),
-        NT4Topic(
+        NT3Topic(
           name: 'Test/Split Button Chooser/default',
-          type: NT4Type.string(),
+          type: NT3Type.string(),
           properties: {},
         ),
-        NT4Topic(
+        NT3Topic(
           name: 'Test/Split Button Chooser/selected',
-          type: NT4Type.string(),
+          type: NT3Type.string(),
           properties: {'retained': true},
         ),
       ],

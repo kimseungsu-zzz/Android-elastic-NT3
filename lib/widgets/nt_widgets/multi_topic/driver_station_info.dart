@@ -1,13 +1,10 @@
-import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 
 import 'package:dot_cast/dot_cast.dart';
 import 'package:patterns_canvas/patterns_canvas.dart';
 import 'package:provider/provider.dart';
 
-import 'package:elastic_dashboard/services/nt4_client.dart';
-import 'package:elastic_dashboard/services/struct_schemas/nt_struct.dart';
+import 'package:elastic_dashboard/services/nt3_client.dart';
 import 'package:elastic_dashboard/widgets/nt_widgets/nt_widget.dart';
 
 class DriverStationInfoModel extends MultiTopicNTWidgetModel {
@@ -15,22 +12,22 @@ class DriverStationInfoModel extends MultiTopicNTWidgetModel {
   String type = DriverStationInfo.widgetType;
 
   String get eventNameTopic => '$topic/MatchState/EventName';
-  String get controlWordTopic => '$topic/ControlWord';
+  String get controlWordTopic => '$topic/FMSControlData';
   String get allianceTopic => '$topic/MatchState/IsRedAlliance';
   String get matchNumberTopic => '$topic/MatchState/MatchNumber';
   String get matchTypeTopic => '$topic/MatchState/MatchType';
   String get replayNumberTopic => '$topic/MatchState/ReplayNumber';
   String get stationNumberTopic => '$topic/MatchState/StationNumber';
 
-  late NT4Subscription eventNameSubscription;
-  late NT4Subscription controlWordSubscription;
-  late NT4Subscription allianceSubscription;
-  late NT4Subscription matchNumberSubscription;
-  late NT4Subscription matchTypeSubscription;
-  late NT4Subscription replayNumberSubscription;
+  late NT3Subscription eventNameSubscription;
+  late NT3Subscription controlWordSubscription;
+  late NT3Subscription allianceSubscription;
+  late NT3Subscription matchNumberSubscription;
+  late NT3Subscription matchTypeSubscription;
+  late NT3Subscription replayNumberSubscription;
 
   @override
-  List<NT4Subscription> get subscriptions => [
+  List<NT3Subscription> get subscriptions => [
     eventNameSubscription,
     controlWordSubscription,
     allianceSubscription,
@@ -104,19 +101,8 @@ class DriverStationInfo extends NTWidget {
       listenable: Listenable.merge(model.subscriptions),
       builder: (context, child) {
         String eventName = tryCast(model.eventNameSubscription.value) ?? '';
-        List<int> controlWordRaw =
-            tryCast(model.controlWordSubscription.value) ?? [];
-        NTStruct? controlDataStruct;
-        if (model.ntConnection.schemaManager.getSchema('ControlWord') != null) {
-          NTStructSchema controlWordSchema = model.ntConnection.schemaManager
-              .getSchema('ControlWord')!;
-          try {
-            controlDataStruct = NTStruct.parse(
-              schema: controlWordSchema,
-              data: Uint8List.fromList(controlWordRaw),
-            );
-          } catch (_) {}
-        }
+        int controlWord =
+            tryCast<num>(model.controlWordSubscription.value)?.toInt() ?? 0;
         bool redAlliance = tryCast(model.allianceSubscription.value) ?? true;
         int matchNumber = tryCast(model.matchNumberSubscription.value) ?? 0;
         int matchType = tryCast(model.matchTypeSubscription.value) ?? 0;
@@ -128,19 +114,18 @@ class DriverStationInfo extends NTWidget {
             ? ' (replay $replayNumber)'
             : '';
 
-        bool fmsConnected = controlDataStruct?['fmsAttached'] ?? false;
-        bool dsAttached = controlDataStruct?['dsAttached'] ?? false;
+        bool fmsConnected = controlWord & 0x10 != 0;
+        bool dsAttached = controlWord & 0x20 != 0;
 
-        bool emergencyStopped = controlDataStruct?['eStop'] ?? false;
+        bool emergencyStopped = controlWord & 0x08 != 0;
 
         String robotControlState = 'Disabled';
-        if (controlDataStruct?['enabled'] ?? false) {
-          robotControlState = controlDataStruct?['robotMode'] ?? 'Unknown';
-          if (robotControlState.isNotEmpty) {
-            robotControlState =
-                robotControlState.substring(0, 1).toUpperCase() +
-                robotControlState.substring(1);
-          }
+        if (controlWord & 0x01 != 0) {
+          robotControlState = controlWord & 0x02 != 0
+              ? 'Autonomous'
+              : controlWord & 0x04 != 0
+              ? 'Test'
+              : 'Teleoperated';
         }
 
         String matchDisplayString =

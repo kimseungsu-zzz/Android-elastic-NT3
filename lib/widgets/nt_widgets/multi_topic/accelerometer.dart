@@ -3,20 +3,20 @@ import 'package:flutter/material.dart';
 import 'package:dot_cast/dot_cast.dart';
 import 'package:provider/provider.dart';
 
-import 'package:elastic_dashboard/services/nt4_client.dart';
+import 'package:elastic_dashboard/services/nt3_client.dart';
 import 'package:elastic_dashboard/widgets/nt_widgets/nt_widget.dart';
 
 class AccelerometerModel extends MultiTopicNTWidgetModel {
   @override
   String type = AccelerometerWidget.widgetType;
 
-  late NT4Subscription _valueSubscription;
-  NT4Subscription get valueSubscription => _valueSubscription;
+  late NT3Subscription _valueSubscription;
+  NT3Subscription get valueSubscription => _valueSubscription;
 
   String get valueTopic => '$topic/Value';
 
   @override
-  List<NT4Subscription> get subscriptions => [_valueSubscription];
+  List<NT3Subscription> get subscriptions => [_valueSubscription];
 
   AccelerometerModel({
     required super.ntConnection,

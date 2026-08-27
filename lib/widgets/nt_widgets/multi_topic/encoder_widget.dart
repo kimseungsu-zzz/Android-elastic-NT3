@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:dot_cast/dot_cast.dart';
 import 'package:provider/provider.dart';
 
-import 'package:elastic_dashboard/services/nt4_client.dart';
+import 'package:elastic_dashboard/services/nt3_client.dart';
 import 'package:elastic_dashboard/widgets/nt_widgets/nt_widget.dart';
 
 class EncoderModel extends MultiTopicNTWidgetModel {
@@ -13,11 +13,11 @@ class EncoderModel extends MultiTopicNTWidgetModel {
   String get distanceTopic => '$topic/Distance';
   String get speedTopic => '$topic/Speed';
 
-  late NT4Subscription distanceSubscription;
-  late NT4Subscription speedSubscription;
+  late NT3Subscription distanceSubscription;
+  late NT3Subscription speedSubscription;
 
   @override
-  List<NT4Subscription> get subscriptions => [
+  List<NT3Subscription> get subscriptions => [
     distanceSubscription,
     speedSubscription,
   ];

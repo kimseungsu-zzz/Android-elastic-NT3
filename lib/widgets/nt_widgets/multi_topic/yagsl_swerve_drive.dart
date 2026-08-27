@@ -6,7 +6,7 @@ import 'package:dot_cast/dot_cast.dart';
 import 'package:provider/provider.dart';
 import 'package:vector_math/vector_math_64.dart' show radians;
 
-import 'package:elastic_dashboard/services/nt4_client.dart';
+import 'package:elastic_dashboard/services/nt3_client.dart';
 import 'package:elastic_dashboard/services/text_formatter_builder.dart';
 import 'package:elastic_dashboard/widgets/dialog_widgets/dialog_text_input.dart';
 import 'package:elastic_dashboard/widgets/dialog_widgets/dialog_toggle_switch.dart';
@@ -24,16 +24,16 @@ class YAGSLSwerveDriveModel extends MultiTopicNTWidgetModel {
   String get robotLengthTopic => '$topic/sizeFrontBack';
   String get rotationUnitTopic => '$topic/rotationUnit';
 
-  late NT4Subscription measuredStatesSubscription;
-  late NT4Subscription desiredStatesSubscription;
-  late NT4Subscription robotRotationSubscription;
-  late NT4Subscription maxSpeedSubscription;
-  late NT4Subscription robotWidthSubscription;
-  late NT4Subscription robotLengthSubscription;
-  late NT4Subscription rotationUnitSubscription;
+  late NT3Subscription measuredStatesSubscription;
+  late NT3Subscription desiredStatesSubscription;
+  late NT3Subscription robotRotationSubscription;
+  late NT3Subscription maxSpeedSubscription;
+  late NT3Subscription robotWidthSubscription;
+  late NT3Subscription robotLengthSubscription;
+  late NT3Subscription rotationUnitSubscription;
 
   @override
-  List<NT4Subscription> get subscriptions => [
+  List<NT3Subscription> get subscriptions => [
     measuredStatesSubscription,
     desiredStatesSubscription,
     robotRotationSubscription,

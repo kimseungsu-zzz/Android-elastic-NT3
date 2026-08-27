@@ -6,7 +6,7 @@ import 'package:dot_cast/dot_cast.dart';
 import 'package:geekyants_flutter_gauges/geekyants_flutter_gauges.dart';
 import 'package:provider/provider.dart';
 
-import 'package:elastic_dashboard/services/nt4_client.dart';
+import 'package:elastic_dashboard/services/nt3_client.dart';
 import 'package:elastic_dashboard/widgets/nt_widgets/nt_widget.dart';
 
 class DifferentialDriveModel extends MultiTopicNTWidgetModel {
@@ -16,17 +16,17 @@ class DifferentialDriveModel extends MultiTopicNTWidgetModel {
   String get leftSpeedTopicName => '$topic/Left Motor Speed';
   String get rightSpeedTopicName => '$topic/Right Motor Speed';
 
-  late NT4Subscription leftSpeedSubscription;
-  late NT4Subscription rightSpeedSubscription;
+  late NT3Subscription leftSpeedSubscription;
+  late NT3Subscription rightSpeedSubscription;
 
   @override
-  List<NT4Subscription> get subscriptions => [
+  List<NT3Subscription> get subscriptions => [
     leftSpeedSubscription,
     rightSpeedSubscription,
   ];
 
-  NT4Topic? leftSpeedTopic;
-  NT4Topic? rightSpeedTopic;
+  NT3Topic? leftSpeedTopic;
+  NT3Topic? rightSpeedTopic;
 
   double leftSpeedPreviousValue = 0.0;
   double rightSpeedPreviousValue = 0.0;

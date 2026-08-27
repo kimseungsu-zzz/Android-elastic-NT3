@@ -1,6 +1,6 @@
 {
-    "name": "Elastic",
-    "short_name": "Elastic",
+    "name": "Elastic (NT3)",
+    "short_name": "Elastic NT3",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#1f47a1",

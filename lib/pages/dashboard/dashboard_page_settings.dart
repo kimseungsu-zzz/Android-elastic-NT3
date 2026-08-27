@@ -301,12 +301,6 @@ mixin DashboardPageSettings on DashboardPageViewModel {
           ),
         );
         break;
-      case IPAddressMode.systemCoremDNS:
-        updateIPAddress('robot.local');
-        break;
-      case IPAddressMode.systemCoreAP:
-        updateIPAddress('172.30.0.1');
-        break;
       case IPAddressMode.localhost:
         updateIPAddress('localhost');
         break;

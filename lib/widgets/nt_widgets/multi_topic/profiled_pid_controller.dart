@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:dot_cast/dot_cast.dart';
 import 'package:provider/provider.dart';
 
-import 'package:elastic_dashboard/services/nt4_client.dart';
+import 'package:elastic_dashboard/services/nt3_client.dart';
 import 'package:elastic_dashboard/services/text_formatter_builder.dart';
 import 'package:elastic_dashboard/widgets/nt_widgets/nt_widget.dart';
 
@@ -16,18 +16,18 @@ class ProfiledPIDControllerModel extends MultiTopicNTWidgetModel {
   String get kdTopicName => '$topic/d';
   String get goalTopicName => '$topic/goal';
 
-  NT4Topic? _kpTopic;
-  NT4Topic? _kiTopic;
-  NT4Topic? _kdTopic;
-  NT4Topic? _goalTopic;
+  NT3Topic? _kpTopic;
+  NT3Topic? _kiTopic;
+  NT3Topic? _kdTopic;
+  NT3Topic? _goalTopic;
 
-  late NT4Subscription kpSubscription;
-  late NT4Subscription kiSubscription;
-  late NT4Subscription kdSubscription;
-  late NT4Subscription goalSubscription;
+  late NT3Subscription kpSubscription;
+  late NT3Subscription kiSubscription;
+  late NT3Subscription kdSubscription;
+  late NT3Subscription goalSubscription;
 
   @override
-  List<NT4Subscription> get subscriptions => [
+  List<NT3Subscription> get subscriptions => [
     kpSubscription,
     kiSubscription,
     kdSubscription,

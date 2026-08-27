@@ -4,8 +4,6 @@ import 'dart:typed_data';
 enum IPAddressMode {
   driverStation('Driver Station', 0),
   teamNumber('Team Number (10.TE.AM.2)', 1),
-  systemCoremDNS('SystemCore mDNS', 2),
-  systemCoreAP('SystemCore Wifi', 5),
   localhost('localhost (127.0.0.1)', 3),
   custom('Custom', 4);
 
@@ -17,13 +15,10 @@ enum IPAddressMode {
   @override
   String toString() => displayName;
 
-  static IPAddressMode fromID(int? index) {
-    if (index == null || index >= values.length) {
-      return driverStation;
-    }
-
-    return values.firstWhere((e) => e.id == index);
-  }
+  static IPAddressMode fromID(int? index) => values.firstWhere(
+    (mode) => mode.id == index,
+    orElse: () => driverStation,
+  );
 }
 
 class IPAddressUtil {

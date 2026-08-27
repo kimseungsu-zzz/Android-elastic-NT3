@@ -4,7 +4,7 @@ import 'package:decimal/decimal.dart';
 import 'package:dot_cast/dot_cast.dart';
 import 'package:provider/provider.dart';
 
-import 'package:elastic_dashboard/services/nt4_type.dart';
+import 'package:elastic_dashboard/services/nt3_type.dart';
 import 'package:elastic_dashboard/services/settings.dart';
 import 'package:elastic_dashboard/widgets/dialog_widgets/dialog_toggle_switch.dart';
 import 'package:elastic_dashboard/widgets/nt_widgets/nt_widget.dart';
@@ -33,7 +33,6 @@ class TextDisplayModel extends SingleTopicNTWidgetModel {
     required super.preferences,
     required super.topic,
     bool? showSubmitButton,
-    super.ntStructMeta,
     super.dataType,
     super.period,
   }) : super() {
@@ -82,7 +81,7 @@ class TextDisplayModel extends SingleTopicNTWidgetModel {
       return;
     }
 
-    NT4Type dataType = ntStructMeta?.type ?? ntTopic!.type;
+    NT3Type dataType = ntTopic!.type;
     Object? formattedData = dataType.convertString(value);
 
     if (publishTopic) {
@@ -158,7 +157,7 @@ class TextDisplay extends NTWidget {
                     isDense: true,
                     error: (showWarning) ? const SizedBox() : null,
                   ),
-                  readOnly: model.ntStructMeta != null,
+                  readOnly: false,
                   onChanged: (value) {
                     model.typing = true;
                   },
@@ -169,8 +168,7 @@ class TextDisplay extends NTWidget {
                 ),
               ),
             ),
-            // Don't show submit button if it's displaying a struct value
-            if (model.showSubmitButton && model.ntStructMeta == null) ...[
+            if (model.showSubmitButton) ...[
               const SizedBox(width: 1.5),
               Tooltip(
                 message: 'Publish Data',

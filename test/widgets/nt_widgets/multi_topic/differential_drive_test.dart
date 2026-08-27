@@ -5,8 +5,8 @@ import 'package:geekyants_flutter_gauges/geekyants_flutter_gauges.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:elastic_dashboard/services/nt4_client.dart';
-import 'package:elastic_dashboard/services/nt4_type.dart';
+import 'package:elastic_dashboard/services/nt3_client.dart';
+import 'package:elastic_dashboard/services/nt3_type.dart';
 import 'package:elastic_dashboard/services/nt_connection.dart';
 import 'package:elastic_dashboard/services/nt_widget_registry.dart';
 import 'package:elastic_dashboard/widgets/nt_widgets/multi_topic/differential_drive.dart';
@@ -28,16 +28,16 @@ void main() {
     SharedPreferences.setMockInitialValues({});
     preferences = await SharedPreferences.getInstance();
 
-    ntConnection = createMockOnlineNT4(
+    ntConnection = createMockOnlineNT3(
       virtualTopics: [
-        NT4Topic(
+        NT3Topic(
           name: 'Test/Differential Drive/Left Motor Speed',
-          type: NT4Type.float(),
+          type: NT3Type.double(),
           properties: {},
         ),
-        NT4Topic(
+        NT3Topic(
           name: 'Test/Differential Drive/Right Motor Speed',
-          type: NT4Type.float(),
+          type: NT3Type.double(),
           properties: {},
         ),
       ],

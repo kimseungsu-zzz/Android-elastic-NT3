@@ -8,9 +8,7 @@ import 'package:flutter/services.dart';
 
 import 'package:collection/collection.dart';
 import 'package:elegant_notification/elegant_notification.dart';
-import 'package:elegant_notification/resources/stacked_options.dart';
 import 'package:flex_seed_scheme/flex_seed_scheme.dart';
-import 'package:http/http.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -22,8 +20,6 @@ import 'package:elastic_dashboard/pages/dashboard/dashboard_page_settings.dart';
 import 'package:elastic_dashboard/pages/dashboard/dashboard_page_tabs.dart';
 import 'package:elastic_dashboard/pages/dashboard/dashboard_page_window.dart';
 import 'package:elastic_dashboard/services/app_distributor.dart';
-import 'package:elastic_dashboard/services/elastic_layout_downloader.dart';
-import 'package:elastic_dashboard/services/elasticlib_listener.dart';
 import 'package:elastic_dashboard/services/hotkey_manager.dart';
 import 'package:elastic_dashboard/services/ip_address_util.dart';
 import 'package:elastic_dashboard/services/log.dart';
@@ -40,41 +36,6 @@ import 'package:elastic_dashboard/util/stub/unload_handler_stub.dart'
     if (dart.library.js_interop) 'package:elastic_dashboard/util/unload_handler.dart';
 import 'package:window_manager/window_manager.dart'
     if (dart.library.js_interop) 'package:elastic_dashboard/util/stub/window_stub.dart';
-
-enum LayoutDownloadMode {
-  overwrite(
-    name: 'Overwrite',
-    description:
-        'Keeps existing tabs that are not defined in the remote layout. Any tabs that are defined in the remote layout will be overwritten locally.',
-  ),
-  merge(
-    name: 'Merge',
-    description:
-        'Merge the downloaded layout with the existing one. If a new widget cannot be properly placed, it will not be added.',
-  ),
-  reload(
-    name: 'Full Reload',
-    description: 'Deletes the existing layout and loads the new one.',
-  );
-
-  final String name;
-  final String description;
-
-  const LayoutDownloadMode({required this.name, required this.description});
-
-  static String get descriptions {
-    String result = '';
-    for (final value in values) {
-      result += '${value.name}: ';
-      result += value.description;
-
-      if (value != values.last) {
-        result += '\n\n';
-      }
-    }
-    return result;
-  }
-}
 
 mixin DashboardPageStateMixin on State<DashboardPage> {
   void showNotification(ElegantNotification notification) {
@@ -93,11 +54,8 @@ abstract class DashboardPageViewModel extends ChangeNotifier {
   final NTConnection ntConnection;
   final SharedPreferences preferences;
   late final UpdateChecker? updateChecker;
-  late final ElasticLayoutDownloader? layoutDownloader;
   final Function(Color color)? onColorChanged;
   final Function(FlexSchemeVariant variant)? onThemeVariantChanged;
-
-  late final ElasticLibListener robotNotificationListener;
 
   final List<TabData> tabData = [];
 
@@ -123,13 +81,9 @@ abstract class DashboardPageViewModel extends ChangeNotifier {
     required this.preferences,
     required this.version,
     UpdateChecker? updateChecker,
-    ElasticLayoutDownloader? layoutDownloader,
     this.onColorChanged,
     this.onThemeVariantChanged,
   }) {
-    this.layoutDownloader =
-        layoutDownloader ?? ElasticLayoutDownloader(Client());
-
     this.updateChecker =
         updateChecker ?? UpdateChecker(currentVersion: version);
   }
@@ -147,49 +101,6 @@ abstract class DashboardPageViewModel extends ChangeNotifier {
   }
 
   void init() {
-    robotNotificationListener = ElasticLibListener(
-      ntConnection: ntConnection,
-      onTabSelected: (tabIdentifier) {
-        if (tabIdentifier is int) {
-          if (tabIdentifier >= tabData.length) {
-            return;
-          }
-          switchToTab(tabIdentifier);
-        } else if (tabIdentifier is String) {
-          int tabIndex = tabData.indexWhere((tab) => tab.name == tabIdentifier);
-          if (tabIndex == -1) {
-            return;
-          }
-          switchToTab(tabIndex);
-        }
-      },
-      onNotification: (title, description, icon, time, width, height) {
-        ColorScheme colorScheme = state!.theme.colorScheme;
-        TextTheme textTheme = state!.theme.textTheme;
-        var widget = ElegantNotification(
-          autoDismiss: time.inMilliseconds > 0,
-          showProgressIndicator: time.inMilliseconds > 0,
-          background: colorScheme.surface,
-          width: width,
-          height: height,
-          position: Alignment.bottomRight,
-          title: Text(
-            title,
-            style: textTheme.bodyMedium!.copyWith(fontWeight: FontWeight.bold),
-          ),
-          toastDuration: time,
-          icon: icon,
-          description: Text(description),
-          stackedOptions: StackedOptions(
-            key: 'notification',
-            type: StackedType.above,
-          ),
-        );
-        state!.showNotification(widget);
-      },
-    );
-    robotNotificationListener.listen();
-
     ntConnection.dsClientConnect();
 
     ntConnection.dsIpAddress.addListener(() async {
@@ -239,11 +150,7 @@ abstract class DashboardPageViewModel extends ChangeNotifier {
 
     loadLayout();
 
-    if (!isWPILib) {
-      Future(
-        () => checkForUpdates(notifyIfLatest: false, notifyIfError: false),
-      );
-    }
+    Future(() => checkForUpdates(notifyIfLatest: false, notifyIfError: false));
   }
 
   bool hasUnsavedChanges() {
@@ -354,16 +261,6 @@ abstract class DashboardPageViewModel extends ChangeNotifier {
   void clearLayout() {}
 
   bool loadLayoutFromJsonData(String jsonString) => false;
-
-  bool mergeLayoutFromJsonData(String jsonString) => false;
-
-  void overwriteLayoutFromJsonData(String jsonString) {}
-
-  Future<({String layout, LayoutDownloadMode mode})?> showRemoteLayoutSelection(
-    List<String> fileNames,
-  ) => Future.value(null);
-
-  Future<void> loadLayoutFromRobot() async {}
 
   void createDefaultTabs() {}
 
@@ -605,18 +502,6 @@ class _DashboardPageState extends State<DashboardPage>
         modifiers: [KeyModifier.control, KeyModifier.shift],
       ),
       callback: model.exportLayout,
-    );
-    // Download from robot (Ctrl + D)
-    hotKeyManager.register(
-      HotKey(LogicalKeyboardKey.keyD, modifiers: [KeyModifier.control]),
-      callback: () {
-        if (preferences.getBool(PrefKeys.layoutLocked) ??
-            Defaults.layoutLocked) {
-          return;
-        }
-
-        model.loadLayoutFromRobot();
-      },
     );
     // Switch to Tab (Ctrl + Tab #)
     for (int i = 1; i <= 9; i++) {
@@ -866,23 +751,6 @@ class _DashboardPageState extends State<DashboardPage>
               ],
             ),
           ),
-          // Download layout
-          MenuItemButton(
-            style: menuButtonStyle,
-            onPressed: !layoutLocked ? model.loadLayoutFromRobot : null,
-            shortcut: const SingleActivator(
-              LogicalKeyboardKey.keyD,
-              control: true,
-            ),
-            child: const Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(Icons.download),
-                SizedBox(width: 8),
-                Text('Download From Robot'),
-              ],
-            ),
-          ),
         ],
         child: const Text('File'),
       ),
@@ -943,20 +811,18 @@ class _DashboardPageState extends State<DashboardPage>
               ],
             ),
           ),
-          // Check for Updates (not for WPILib distribution)
-          if (!isWPILib)
-            MenuItemButton(
-              style: menuButtonStyle,
-              onPressed: () => model.checkForUpdates(),
-              child: const Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(Icons.update_outlined),
-                  SizedBox(width: 8),
-                  Text('Check for Updates'),
-                ],
-              ),
+          MenuItemButton(
+            style: menuButtonStyle,
+            onPressed: () => model.checkForUpdates(),
+            child: const Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.update_outlined),
+                SizedBox(width: 8),
+                Text('Check for Updates'),
+              ],
             ),
+          ),
         ],
         child: const Text('Help'),
       ),

@@ -5,8 +5,8 @@ import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:elastic_dashboard/services/nt4_client.dart';
-import 'package:elastic_dashboard/services/nt4_type.dart';
+import 'package:elastic_dashboard/services/nt3_client.dart';
+import 'package:elastic_dashboard/services/nt3_type.dart';
 import 'package:elastic_dashboard/services/nt_widget_registry.dart';
 import 'package:elastic_dashboard/widgets/nt_widgets/multi_topic/robot_preferences.dart';
 import 'package:elastic_dashboard/widgets/nt_widgets/nt_widget.dart';
@@ -28,26 +28,26 @@ void main() {
     SharedPreferences.setMockInitialValues({});
     preferences = await SharedPreferences.getInstance();
 
-    ntConnection = createMockOnlineNT4(
+    ntConnection = createMockOnlineNT3(
       virtualTopics: [
-        NT4Topic(
+        NT3Topic(
           name: 'Test/Preferences/Test Preference',
-          type: NT4Type.int(),
+          type: NT3Type.double(),
           properties: {},
         ),
-        NT4Topic(
+        NT3Topic(
           name: 'Test/Preferences/Preference 1',
-          type: NT4Type.float(),
+          type: NT3Type.double(),
           properties: {},
         ),
-        NT4Topic(
+        NT3Topic(
           name: 'Test/Preferences/Preference 2',
-          type: NT4Type.boolean(),
+          type: NT3Type.boolean(),
           properties: {},
         ),
-        NT4Topic(
+        NT3Topic(
           name: 'Test/Preferences/Preference 3',
-          type: NT4Type.string(),
+          type: NT3Type.string(),
           properties: {},
         ),
       ],

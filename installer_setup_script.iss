@@ -1,7 +1,7 @@
-#define MyAppName "Elastic"
-#define MyAppFolderName "FRC Elastic"
+#define MyAppName "Elastic (NT3)"
+#define MyAppFolderName "FRC Elastic NT3"
 #define MyAppPublisher "Gold87"
-#define MyAppURL "https://github.com/Gold872/elastic_dashboard/"
+#define MyAppURL "https://github.com/kimseungsu-zzz/elastic-NT3/"
 #define MyAppExeName "elastic_dashboard.exe"
 #define MyAppSourceDir "build\windows\x64\runner\Release"
 #define MyAppExePath MyAppSourceDir + "\" + MyAppExeName

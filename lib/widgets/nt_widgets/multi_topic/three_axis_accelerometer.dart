@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:dot_cast/dot_cast.dart';
 import 'package:provider/provider.dart';
 
-import 'package:elastic_dashboard/services/nt4_client.dart';
+import 'package:elastic_dashboard/services/nt3_client.dart';
 import 'package:elastic_dashboard/widgets/nt_widgets/nt_widget.dart';
 
 class ThreeAxisAccelerometerModel extends MultiTopicNTWidgetModel {
@@ -14,12 +14,12 @@ class ThreeAxisAccelerometerModel extends MultiTopicNTWidgetModel {
   String get yTopic => '$topic/Y';
   String get zTopic => '$topic/Z';
 
-  late NT4Subscription xSubscription;
-  late NT4Subscription ySubscription;
-  late NT4Subscription zSubscription;
+  late NT3Subscription xSubscription;
+  late NT3Subscription ySubscription;
+  late NT3Subscription zSubscription;
 
   @override
-  List<NT4Subscription> get subscriptions => [
+  List<NT3Subscription> get subscriptions => [
     xSubscription,
     ySubscription,
     zSubscription,

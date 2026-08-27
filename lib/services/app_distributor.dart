@@ -1,5 +1,3 @@
-const bool isWPILib = bool.fromEnvironment('ELASTIC_WPILIB');
-
 const String logoPath = 'assets/logos/logo.png';
 
-const String appTitle = !isWPILib ? 'Elastic' : 'Elastic (WPILib)';
+const String appTitle = 'Elastic (NT3)';

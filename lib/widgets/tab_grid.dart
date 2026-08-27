@@ -113,7 +113,7 @@ class TabGridModel extends ChangeNotifier {
               ntConnection: ntConnection,
               jsonData: widgetData,
               preferences: preferences,
-              enabled: ntConnection.isNT4Connected,
+              enabled: ntConnection.isNT3Connected,
               onJsonLoadingWarning: onJsonLoadingWarning,
             ),
           );
@@ -160,10 +160,10 @@ class TabGridModel extends ChangeNotifier {
                         ntConnection: ntConnection,
                         jsonData: jsonData,
                         preferences: preferences,
-                        enabled: ntConnection.isNT4Connected,
+                        enabled: ntConnection.isNT3Connected,
                         onJsonLoadingWarning: onJsonLoadingWarning,
                       ),
-              enabled: ntConnection.isNT4Connected,
+              enabled: ntConnection.isNT3Connected,
               dragOutFunctions: (
                 dragOutUpdate: layoutDragOutUpdate,
                 dragOutEnd: layoutDragOutEnd,
@@ -185,7 +185,7 @@ class TabGridModel extends ChangeNotifier {
         NTWidgetContainerModel.fromJson(
           ntConnection: ntConnection,
           preferences: preferences,
-          enabled: ntConnection.isNT4Connected,
+          enabled: ntConnection.isNT3Connected,
           jsonData: containerData,
           onJsonLoadingWarning: onJsonLoadingWarning,
         ),
@@ -218,10 +218,10 @@ class TabGridModel extends ChangeNotifier {
                       ntConnection: ntConnection,
                       jsonData: jsonData,
                       preferences: preferences,
-                      enabled: ntConnection.isNT4Connected,
+                      enabled: ntConnection.isNT3Connected,
                       onJsonLoadingWarning: onJsonLoadingWarning,
                     ),
-            enabled: ntConnection.isNT4Connected,
+            enabled: ntConnection.isNT3Connected,
             dragOutFunctions: (
               dragOutUpdate: layoutDragOutUpdate,
               dragOutEnd: layoutDragOutEnd,
@@ -639,7 +639,7 @@ class TabGridModel extends ChangeNotifier {
     widget.previewRect = previewLocation;
 
     widget.tryCast<NTWidgetContainerModel>()?.updateMinimumSize();
-    widget.enabled = ntConnection.isNT4Connected;
+    widget.enabled = ntConnection.isNT3Connected;
 
     // If dragging into layout
     if (widget is NTWidgetContainerModel &&
@@ -1170,7 +1170,7 @@ class TabGrid extends StatelessWidget {
       return NTWidgetContainerModel.fromJson(
         ntConnection: grid.ntConnection,
         preferences: grid.preferences,
-        enabled: grid.ntConnection.isNT4Connected,
+        enabled: grid.ntConnection.isNT3Connected,
         jsonData: json,
       );
     }

@@ -5,7 +5,7 @@ import 'package:collection/collection.dart';
 import 'package:dot_cast/dot_cast.dart';
 import 'package:provider/provider.dart';
 
-import 'package:elastic_dashboard/services/nt4_client.dart';
+import 'package:elastic_dashboard/services/nt3_client.dart';
 import 'package:elastic_dashboard/widgets/custom_loading_indicator.dart';
 import 'package:elastic_dashboard/widgets/dialog_widgets/dialog_text_input.dart';
 import 'package:elastic_dashboard/widgets/mjpeg.dart';
@@ -17,10 +17,10 @@ class CameraStreamModel extends MultiTopicNTWidgetModel {
 
   String get streamsTopic => '$topic/streams';
 
-  late NT4Subscription streamsSubscription;
+  late NT3Subscription streamsSubscription;
 
   @override
-  List<NT4Subscription> get subscriptions => [streamsSubscription];
+  List<NT3Subscription> get subscriptions => [streamsSubscription];
 
   int? quality;
   int? fps;
@@ -356,7 +356,7 @@ class CameraStreamWidget extends NTWidget {
                   CustomLoadingIndicator(),
                   const SizedBox(height: 10),
                   Text(
-                    (model.ntConnection.isNT4Connected)
+                    (model.ntConnection.isNT3Connected)
                         ? 'Waiting for Camera Stream connection...'
                         : 'Waiting for Network Tables connection...',
                     textAlign: TextAlign.center,

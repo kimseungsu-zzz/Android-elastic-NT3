@@ -32,7 +32,7 @@ void main() {
     SharedPreferences.setMockInitialValues({});
     preferences = await SharedPreferences.getInstance();
 
-    ntConnection = createMockOnlineNT4();
+    ntConnection = createMockOnlineNT3();
   });
 
   test('YAGSL swerve drive from json', () {

@@ -5,8 +5,8 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:elastic_dashboard/services/field_images.dart';
-import 'package:elastic_dashboard/services/nt4_client.dart';
-import 'package:elastic_dashboard/services/nt4_type.dart';
+import 'package:elastic_dashboard/services/nt3_client.dart';
+import 'package:elastic_dashboard/services/nt3_type.dart';
 import 'package:elastic_dashboard/services/nt_connection.dart';
 import 'package:elastic_dashboard/services/nt_widget_registry.dart';
 import 'package:elastic_dashboard/widgets/dialog_widgets/dialog_color_picker.dart';
@@ -17,7 +17,6 @@ import 'package:elastic_dashboard/widgets/draggable_containers/draggable_nt_widg
 import 'package:elastic_dashboard/widgets/draggable_containers/models/nt_widget_container_model.dart';
 import 'package:elastic_dashboard/widgets/nt_widgets/multi_topic/field_widget.dart';
 import 'package:elastic_dashboard/widgets/nt_widgets/nt_widget.dart';
-import '../../../services/struct_schemas/pose2d_struct_test.dart';
 import '../../../test_util.dart';
 
 void main() {
@@ -49,16 +48,16 @@ void main() {
     SharedPreferences.setMockInitialValues({});
     preferences = await SharedPreferences.getInstance();
 
-    ntConnection = createMockOnlineNT4(
+    ntConnection = createMockOnlineNT3(
       virtualTopics: [
-        NT4Topic(
+        NT3Topic(
           name: 'Test/Field/Robot',
-          type: NT4Type.array(NT4Type.double()),
+          type: NT3Type.array(NT3Type.double()),
           properties: {},
         ),
-        NT4Topic(
+        NT3Topic(
           name: 'Test/Field/OtherObject',
-          type: NT4Type.array(NT4Type.double()),
+          type: NT3Type.array(NT3Type.double()),
           properties: {},
         ),
       ],
@@ -154,7 +153,7 @@ void main() {
     final trajectoryWidget = find.byWidgetPredicate(
       (widget) => widget is CustomPaint && widget.painter is TrajectoryPainter,
     );
-    testWidgets('non-struct robot, no trajectory', (widgetTester) async {
+    testWidgets('NT3 double-array robot, no trajectory', (widgetTester) async {
       NTWidgetModel fieldWidgetModel = NTWidgetRegistry.buildNTModelFromJson(
         ntConnection,
         preferences,
@@ -181,53 +180,7 @@ void main() {
       expect(find.byType(Image), findsOneWidget);
     });
 
-    testWidgets('struct robot, no trajectory', (widgetTester) async {
-      NTConnection ntConnection = createMockOnlineNT4(
-        virtualTopics: [
-          NT4Topic(
-            name: 'Test/Field/Robot',
-            type: NT4Type.struct('Pose2d'),
-            properties: {},
-          ),
-          NT4Topic(
-            name: 'Test/Field/OtherObject',
-            type: NT4Type.array(NT4Type.double()),
-            properties: {},
-          ),
-        ],
-        virtualValues: {
-          'Test/Field/Robot': testPose2dStruct,
-          'Test/Field/OtherObject': [1.0, 1.0, 0.0],
-        },
-      );
-
-      NTWidgetModel fieldWidgetModel = NTWidgetRegistry.buildNTModelFromJson(
-        ntConnection,
-        preferences,
-        'Field',
-        fieldWidgetJson,
-      );
-
-      await widgetTester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: ChangeNotifierProvider<NTWidgetModel>.value(
-              value: fieldWidgetModel,
-              child: const FieldWidget(),
-            ),
-          ),
-        ),
-      );
-
-      await widgetTester.pumpAndSettle();
-
-      expect(find.byType(CustomPaint), findsNWidgets(3));
-      expect(trajectoryWidget, findsNothing);
-      expect(fieldObject, findsNWidgets(2));
-      expect(find.byType(Image), findsOneWidget);
-    });
-
-    testWidgets('non-struct trajectory', (widgetTester) async {
+    testWidgets('NT3 double-array trajectory', (widgetTester) async {
       List<double> fakeTrajectory = [];
 
       for (int i = 0; i < 9; i++) {
@@ -236,21 +189,21 @@ void main() {
         fakeTrajectory.add(0.0);
       }
 
-      NTConnection ntConnection = createMockOnlineNT4(
+      NTConnection ntConnection = createMockOnlineNT3(
         virtualTopics: [
-          NT4Topic(
+          NT3Topic(
             name: 'Test/Field/Robot',
-            type: NT4Type.array(NT4Type.double()),
+            type: NT3Type.array(NT3Type.double()),
             properties: {},
           ),
-          NT4Topic(
+          NT3Topic(
             name: 'Test/Field/OtherObject',
-            type: NT4Type.array(NT4Type.double()),
+            type: NT3Type.array(NT3Type.double()),
             properties: {},
           ),
-          NT4Topic(
+          NT3Topic(
             name: 'Test/Field/Trajectory',
-            type: NT4Type.array(NT4Type.double()),
+            type: NT3Type.array(NT3Type.double()),
             properties: {},
           ),
         ],
@@ -287,75 +240,17 @@ void main() {
       expect(find.byType(Image), findsOneWidget);
     });
 
-    testWidgets('struct trajectory', (widgetTester) async {
-      List<int> fakeTrajectory = [];
-
-      for (int i = 0; i < 9; i++) {
-        fakeTrajectory.addAll(testPose2dStruct);
-      }
-
-      NTConnection ntConnection = createMockOnlineNT4(
+    testWidgets('with one NT3 double-array object', (widgetTester) async {
+      NTConnection ntConnection = createMockOnlineNT3(
         virtualTopics: [
-          NT4Topic(
+          NT3Topic(
             name: 'Test/Field/Robot',
-            type: NT4Type.array(NT4Type.double()),
+            type: NT3Type.array(NT3Type.double()),
             properties: {},
           ),
-          NT4Topic(
+          NT3Topic(
             name: 'Test/Field/OtherObject',
-            type: NT4Type.array(NT4Type.double()),
-            properties: {},
-          ),
-          NT4Topic(
-            name: 'Test/Field/Trajectory',
-            type: NT4Type.array(NT4Type.struct('Pose2d')),
-            properties: {},
-          ),
-        ],
-        virtualValues: {
-          'Test/Field/Robot': [5.0, 5.0, 270.0],
-          'Test/Field/OtherObject': [1.0, 1.0, 0.0],
-          'Test/Field/Trajectory': fakeTrajectory,
-        },
-      );
-
-      NTWidgetModel fieldWidgetModel = NTWidgetRegistry.buildNTModelFromJson(
-        ntConnection,
-        preferences,
-        'Field',
-        fieldWidgetJson,
-      );
-
-      await widgetTester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: ChangeNotifierProvider<NTWidgetModel>.value(
-              value: fieldWidgetModel,
-              child: const FieldWidget(),
-            ),
-          ),
-        ),
-      );
-
-      await widgetTester.pumpAndSettle();
-
-      expect(find.byType(CustomPaint), findsNWidgets(4));
-      expect(trajectoryWidget, findsOneWidget);
-      expect(fieldObject, findsNWidgets(2));
-      expect(find.byType(Image), findsOneWidget);
-    });
-
-    testWidgets('with one non-struct object', (widgetTester) async {
-      NTConnection ntConnection = createMockOnlineNT4(
-        virtualTopics: [
-          NT4Topic(
-            name: 'Test/Field/Robot',
-            type: NT4Type.array(NT4Type.double()),
-            properties: {},
-          ),
-          NT4Topic(
-            name: 'Test/Field/OtherObject',
-            type: NT4Type.array(NT4Type.double()),
+            type: NT3Type.array(NT3Type.double()),
             properties: {},
           ),
         ],
@@ -389,113 +284,19 @@ void main() {
       expect(trajectoryWidget, findsNothing);
     });
 
-    testWidgets('with multiple non-struct objects', (widgetTester) async {
+    testWidgets('with multiple NT3 double-array objects', (widgetTester) async {
       List<double> fakeObjects = [5.0, 5.0, 0.0, 5.0, 5.0, 0.0, 5.0, 5.0, 0.0];
 
-      NTConnection ntConnection = createMockOnlineNT4(
+      NTConnection ntConnection = createMockOnlineNT3(
         virtualTopics: [
-          NT4Topic(
+          NT3Topic(
             name: 'Test/Field/Robot',
-            type: NT4Type.array(NT4Type.double()),
+            type: NT3Type.array(NT3Type.double()),
             properties: {},
           ),
-          NT4Topic(
+          NT3Topic(
             name: 'Test/Field/OtherObjects',
-            type: NT4Type.array(NT4Type.double()),
-            properties: {},
-          ),
-        ],
-        virtualValues: {
-          'Test/Field/Robot': [5.0, 5.0, 270.0],
-          'Test/Field/OtherObjects': fakeObjects,
-        },
-      );
-
-      NTWidgetModel fieldWidgetModel = NTWidgetRegistry.buildNTModelFromJson(
-        ntConnection,
-        preferences,
-        'Field',
-        fieldWidgetJson,
-      );
-
-      await widgetTester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: ChangeNotifierProvider<NTWidgetModel>.value(
-              value: fieldWidgetModel,
-              child: const FieldWidget(),
-            ),
-          ),
-        ),
-      );
-
-      await widgetTester.pumpAndSettle();
-
-      expect(fieldObject, findsNWidgets(4));
-      expect(trajectoryWidget, findsNothing);
-    });
-
-    testWidgets('with one struct object', (widgetTester) async {
-      NTConnection ntConnection = createMockOnlineNT4(
-        virtualTopics: [
-          NT4Topic(
-            name: 'Test/Field/Robot',
-            type: NT4Type.array(NT4Type.double()),
-            properties: {},
-          ),
-          NT4Topic(
-            name: 'Test/Field/OtherObject',
-            type: NT4Type.struct('Pose2d'),
-            properties: {},
-          ),
-        ],
-        virtualValues: {
-          'Test/Field/Robot': [5.0, 5.0, 270.0],
-          'Test/Field/OtherObject': testPose2dStruct,
-        },
-      );
-
-      NTWidgetModel fieldWidgetModel = NTWidgetRegistry.buildNTModelFromJson(
-        ntConnection,
-        preferences,
-        'Field',
-        fieldWidgetJson,
-      );
-
-      await widgetTester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: ChangeNotifierProvider<NTWidgetModel>.value(
-              value: fieldWidgetModel,
-              child: const FieldWidget(),
-            ),
-          ),
-        ),
-      );
-
-      await widgetTester.pumpAndSettle();
-
-      expect(fieldObject, findsNWidgets(2));
-      expect(trajectoryWidget, findsNothing);
-    });
-
-    testWidgets('with multiple struct objects', (widgetTester) async {
-      List<int> fakeObjects = [
-        ...testPose2dStruct,
-        ...testPose2dStruct,
-        ...testPose2dStruct,
-      ];
-
-      NTConnection ntConnection = createMockOnlineNT4(
-        virtualTopics: [
-          NT4Topic(
-            name: 'Test/Field/Robot',
-            type: NT4Type.array(NT4Type.double()),
-            properties: {},
-          ),
-          NT4Topic(
-            name: 'Test/Field/OtherObjects',
-            type: NT4Type.array(NT4Type.struct('Pose2d')),
+            type: NT3Type.array(NT3Type.double()),
             properties: {},
           ),
         ],

@@ -33,7 +33,7 @@ void main() {
     SharedPreferences.setMockInitialValues({});
     preferences = await SharedPreferences.getInstance();
 
-    ntConnection = createMockOnlineNT4();
+    ntConnection = createMockOnlineNT3();
   });
 
   test('Camera stream from json', () {
@@ -174,7 +174,7 @@ void main() {
     FlutterError.onError = ignoreOverflowErrors;
 
     NTWidgetModel cameraStreamModel = NTWidgetRegistry.buildNTModelFromJson(
-      createMockOfflineNT4(),
+      createMockOfflineNT3(),
       preferences,
       'Camera Stream',
       cameraStreamJson,

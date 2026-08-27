@@ -30,7 +30,7 @@ void main() {
     preferences = await SharedPreferences.getInstance();
 
     dashboardModel = SettingsDashboardViewModel(
-      ntConnection: createMockOfflineNT4(),
+      ntConnection: createMockOfflineNT3(),
       preferences: preferences,
       version: '0.0.0.0',
     );
@@ -73,7 +73,7 @@ void main() {
       setUp(() async {
         await preferences.setString(PrefKeys.ipAddress, '10.3.53.2');
 
-        MockNTConnection mockConnection = createMockOfflineNT4();
+        MockNTConnection mockConnection = createMockOfflineNT3();
 
         dashboardModel = SettingsDashboardViewModel(
           ntConnection: mockConnection,
@@ -85,16 +85,6 @@ void main() {
         await dashboardModel.changeIPAddressMode(IPAddressMode.driverStation);
 
         expect(preferences.getString(PrefKeys.ipAddress), '10.3.53.2');
-      });
-      test('SystemCore Wifi', () async {
-        await dashboardModel.changeIPAddressMode(IPAddressMode.systemCoreAP);
-
-        expect(preferences.getString(PrefKeys.ipAddress), '172.30.0.1');
-      });
-      test('SystemCore mDNS', () async {
-        await dashboardModel.changeIPAddressMode(IPAddressMode.systemCoremDNS);
-
-        expect(preferences.getString(PrefKeys.ipAddress), 'robot.local');
       });
     });
   });
@@ -109,13 +99,6 @@ void main() {
     expect(
       preferences.getInt(PrefKeys.ntTargetServer),
       NTServerTarget.robotCode.index,
-    );
-
-    await dashboardModel.changeNTTargetServer(NTServerTarget.systemCore);
-
-    expect(
-      preferences.getInt(PrefKeys.ntTargetServer),
-      NTServerTarget.systemCore.index,
     );
   });
 

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:dot_cast/dot_cast.dart';
 import 'package:provider/provider.dart';
 
-import 'package:elastic_dashboard/services/nt4_client.dart';
+import 'package:elastic_dashboard/services/nt3_client.dart';
 import 'package:elastic_dashboard/widgets/nt_widgets/nt_widget.dart';
 
 class SubsystemModel extends MultiTopicNTWidgetModel {
@@ -13,11 +13,11 @@ class SubsystemModel extends MultiTopicNTWidgetModel {
   String get defaultCommandTopic => '$topic/.default';
   String get currentCommandTopic => '$topic/.command';
 
-  late NT4Subscription defaultCommandSubscription;
-  late NT4Subscription currentCommandSubscription;
+  late NT3Subscription defaultCommandSubscription;
+  late NT3Subscription currentCommandSubscription;
 
   @override
-  List<NT4Subscription> get subscriptions => [
+  List<NT3Subscription> get subscriptions => [
     defaultCommandSubscription,
     currentCommandSubscription,
   ];

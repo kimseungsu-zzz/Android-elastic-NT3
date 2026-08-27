@@ -5,8 +5,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:elastic_dashboard/services/nt4_client.dart';
-import 'package:elastic_dashboard/services/nt4_type.dart';
+import 'package:elastic_dashboard/services/nt3_client.dart';
+import 'package:elastic_dashboard/services/nt3_type.dart';
 import 'package:elastic_dashboard/services/nt_connection.dart';
 import 'package:elastic_dashboard/services/nt_widget_registry.dart';
 import 'package:elastic_dashboard/widgets/dialog_widgets/dialog_toggle_switch.dart';
@@ -32,26 +32,26 @@ void main() {
     SharedPreferences.setMockInitialValues({});
     preferences = await SharedPreferences.getInstance();
 
-    ntConnection = createMockOnlineNT4(
+    ntConnection = createMockOnlineNT3(
       virtualTopics: [
-        NT4Topic(
+        NT3Topic(
           name: 'Test/Combo Box Chooser/options',
-          type: NT4Type.array(NT4Type.string()),
+          type: NT3Type.array(NT3Type.string()),
           properties: {},
         ),
-        NT4Topic(
+        NT3Topic(
           name: 'Test/Combo Box Chooser/active',
-          type: NT4Type.string(),
+          type: NT3Type.string(),
           properties: {},
         ),
-        NT4Topic(
+        NT3Topic(
           name: 'Test/Combo Box Chooser/selected',
-          type: NT4Type.string(),
+          type: NT3Type.string(),
           properties: {'retained': true},
         ),
-        NT4Topic(
+        NT3Topic(
           name: 'Test/Combo Box Chooser/default',
-          type: NT4Type.string(),
+          type: NT3Type.string(),
           properties: {},
         ),
       ],

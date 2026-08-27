@@ -6,8 +6,8 @@ import 'package:dot_cast/dot_cast.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:provider/provider.dart';
 
-import 'package:elastic_dashboard/services/nt4_client.dart';
-import 'package:elastic_dashboard/services/nt4_type.dart';
+import 'package:elastic_dashboard/services/nt3_client.dart';
+import 'package:elastic_dashboard/services/nt3_type.dart';
 import 'package:elastic_dashboard/widgets/dialog_widgets/dialog_toggle_switch.dart';
 import 'package:elastic_dashboard/widgets/nt_widgets/nt_widget.dart';
 
@@ -20,13 +20,13 @@ class ComboBoxChooserModel extends MultiTopicNTWidgetModel {
   String get activeTopicName => '$topic/active';
   String get defaultTopicName => '$topic/default';
 
-  late NT4Subscription optionsSubscription;
-  late NT4Subscription selectedSubscription;
-  late NT4Subscription activeSubscription;
-  late NT4Subscription defaultSubscription;
+  late NT3Subscription optionsSubscription;
+  late NT3Subscription selectedSubscription;
+  late NT3Subscription activeSubscription;
+  late NT3Subscription defaultSubscription;
 
   @override
-  List<NT4Subscription> get subscriptions => [
+  List<NT3Subscription> get subscriptions => [
     optionsSubscription,
     selectedSubscription,
     activeSubscription,
@@ -42,7 +42,7 @@ class ComboBoxChooserModel extends MultiTopicNTWidgetModel {
   String? previousActive;
   List<String>? previousOptions;
 
-  NT4Topic? _selectedTopic;
+  NT3Topic? _selectedTopic;
 
   bool _sortOptions = false;
 
@@ -196,7 +196,7 @@ class ComboBoxChooserModel extends MultiTopicNTWidgetModel {
       return;
     }
 
-    NT4Topic? existing = ntConnection.getTopicFromName(selectedTopicName);
+    NT3Topic? existing = ntConnection.getTopicFromName(selectedTopicName);
 
     if (existing != null) {
       existing.properties.addAll({'retained': true});
@@ -205,7 +205,7 @@ class ComboBoxChooserModel extends MultiTopicNTWidgetModel {
     } else {
       _selectedTopic = ntConnection.publishNewTopic(
         selectedTopicName,
-        NT4Type.string(),
+        NT3Type.string(),
         properties: {'retained': true},
       );
     }
@@ -220,7 +220,7 @@ class ComboBoxChooserModel extends MultiTopicNTWidgetModel {
   }
 
   void publishSelectedValue(String? selected, [bool initial = false]) {
-    if (selected == null || !ntConnection.isNT4Connected) {
+    if (selected == null || !ntConnection.isNT3Connected) {
       return;
     }
 

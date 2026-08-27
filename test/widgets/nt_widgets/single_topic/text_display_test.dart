@@ -4,8 +4,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:elastic_dashboard/services/nt4_client.dart';
-import 'package:elastic_dashboard/services/nt4_type.dart';
+import 'package:elastic_dashboard/services/nt3_client.dart';
+import 'package:elastic_dashboard/services/nt3_type.dart';
 import 'package:elastic_dashboard/services/nt_connection.dart';
 import 'package:elastic_dashboard/services/nt_widget_registry.dart';
 import 'package:elastic_dashboard/services/settings.dart';
@@ -21,7 +21,7 @@ void main() {
 
   final Map<String, dynamic> textDisplayJson = {
     'topic': 'Test/Display Value',
-    'data_type': NT4Type.double().serialize(),
+    'data_type': NT3Type.double().serialize(),
     'period': 0.100,
     'show_submit_button': true,
   };
@@ -33,11 +33,11 @@ void main() {
     SharedPreferences.setMockInitialValues({});
     preferences = await SharedPreferences.getInstance();
 
-    ntConnection = createMockOnlineNT4(
+    ntConnection = createMockOnlineNT3(
       virtualTopics: [
-        NT4Topic(
+        NT3Topic(
           name: 'Test/Display Value',
-          type: NT4Type.double(),
+          type: NT3Type.double(),
           properties: {},
         ),
       ],
@@ -83,11 +83,11 @@ void main() {
 
   group('Show submit button defaults to', () {
     test('true if topic is persistent', () async {
-      NTConnection ntConnection = createMockOnlineNT4(
+      NTConnection ntConnection = createMockOnlineNT3(
         virtualTopics: [
-          NT4Topic(
+          NT3Topic(
             name: 'Test/Display Value',
-            type: NT4Type.double(),
+            type: NT3Type.double(),
             properties: {'persistent': true},
           ),
         ],
@@ -98,7 +98,7 @@ void main() {
         ntConnection: ntConnection,
         preferences: preferences,
         topic: 'Test/Display Value',
-        dataType: NT4Type.double(),
+        dataType: NT3Type.double(),
         period: 0.100,
       );
 
@@ -114,7 +114,7 @@ void main() {
         ntConnection: ntConnection,
         preferences: preferences,
         topic: 'Test/Display Value',
-        dataType: NT4Type.double(),
+        dataType: NT3Type.double(),
         period: 0.100,
       );
 
@@ -130,7 +130,7 @@ void main() {
         ntConnection: ntConnection,
         preferences: preferences,
         topic: 'Test/Display Value',
-        dataType: NT4Type.double(),
+        dataType: NT3Type.double(),
         period: 0.100,
       );
 
@@ -143,7 +143,7 @@ void main() {
       ntConnection: ntConnection,
       preferences: preferences,
       topic: 'Test/Display Value',
-      dataType: NT4Type.double(),
+      dataType: NT3Type.double(),
       period: 0.100,
       showSubmitButton: true,
     );
@@ -164,7 +164,7 @@ void main() {
         ntConnection: ntConnection,
         preferences: preferences,
         topic: 'Test/Display Value',
-        dataType: NT4Type.double(),
+        dataType: NT3Type.double(),
         period: 0.100,
         showSubmitButton: true,
       );
@@ -208,11 +208,11 @@ void main() {
       NTConnection intNTConnection;
 
       TextDisplayModel textDisplayModel = TextDisplayModel(
-        ntConnection: intNTConnection = createMockOnlineNT4(
+        ntConnection: intNTConnection = createMockOnlineNT3(
           virtualTopics: [
-            NT4Topic(
+            NT3Topic(
               name: 'Test/Display Value',
-              type: NT4Type.int(),
+              type: NT3Type.double(),
               properties: {},
             ),
           ],
@@ -220,7 +220,7 @@ void main() {
         ),
         preferences: preferences,
         topic: 'Test/Display Value',
-        dataType: NT4Type.int(),
+        dataType: NT3Type.double(),
         period: 0.100,
         showSubmitButton: true,
       );
@@ -261,11 +261,11 @@ void main() {
       NTConnection boolNTConnection;
 
       TextDisplayModel textDisplayModel = TextDisplayModel(
-        ntConnection: boolNTConnection = createMockOnlineNT4(
+        ntConnection: boolNTConnection = createMockOnlineNT3(
           virtualTopics: [
-            NT4Topic(
+            NT3Topic(
               name: 'Test/Display Value',
-              type: NT4Type.boolean(),
+              type: NT3Type.boolean(),
               properties: {},
             ),
           ],
@@ -273,7 +273,7 @@ void main() {
         ),
         preferences: preferences,
         topic: 'Test/Display Value',
-        dataType: NT4Type.boolean(),
+        dataType: NT3Type.boolean(),
         period: 0.100,
         showSubmitButton: true,
       );
@@ -322,11 +322,11 @@ void main() {
       NTConnection stringNTConnection;
 
       TextDisplayModel textDisplayModel = TextDisplayModel(
-        ntConnection: stringNTConnection = createMockOnlineNT4(
+        ntConnection: stringNTConnection = createMockOnlineNT3(
           virtualTopics: [
-            NT4Topic(
+            NT3Topic(
               name: 'Test/Display Value',
-              type: NT4Type.string(),
+              type: NT3Type.string(),
               properties: {},
             ),
           ],
@@ -334,7 +334,7 @@ void main() {
         ),
         preferences: preferences,
         topic: 'Test/Display Value',
-        dataType: NT4Type.string(),
+        dataType: NT3Type.string(),
         period: 0.100,
         showSubmitButton: true,
       );
@@ -386,11 +386,11 @@ void main() {
       NTConnection intArrNTConnection;
 
       TextDisplayModel textDisplayModel = TextDisplayModel(
-        ntConnection: intArrNTConnection = createMockOnlineNT4(
+        ntConnection: intArrNTConnection = createMockOnlineNT3(
           virtualTopics: [
-            NT4Topic(
+            NT3Topic(
               name: 'Test/Display Value',
-              type: NT4Type.array(NT4Type.int()),
+              type: NT3Type.array(NT3Type.double()),
               properties: {},
             ),
           ],
@@ -400,7 +400,7 @@ void main() {
         ),
         preferences: preferences,
         topic: 'Test/Display Value',
-        dataType: NT4Type.array(NT4Type.string()),
+        dataType: NT3Type.array(NT3Type.string()),
         period: 0.100,
         showSubmitButton: true,
       );
@@ -450,11 +450,11 @@ void main() {
       NTConnection boolArrNTConnection;
 
       TextDisplayModel textDisplayModel = TextDisplayModel(
-        ntConnection: boolArrNTConnection = createMockOnlineNT4(
+        ntConnection: boolArrNTConnection = createMockOnlineNT3(
           virtualTopics: [
-            NT4Topic(
+            NT3Topic(
               name: 'Test/Display Value',
-              type: NT4Type.array(NT4Type.boolean()),
+              type: NT3Type.array(NT3Type.boolean()),
               properties: {},
             ),
           ],
@@ -464,7 +464,7 @@ void main() {
         ),
         preferences: preferences,
         topic: 'Test/Display Value',
-        dataType: NT4Type.array(NT4Type.boolean()),
+        dataType: NT3Type.array(NT3Type.boolean()),
         period: 0.100,
         showSubmitButton: true,
       );
@@ -517,11 +517,11 @@ void main() {
       NTConnection doubleArrNTConnection;
 
       TextDisplayModel textDisplayModel = TextDisplayModel(
-        ntConnection: doubleArrNTConnection = createMockOnlineNT4(
+        ntConnection: doubleArrNTConnection = createMockOnlineNT3(
           virtualTopics: [
-            NT4Topic(
+            NT3Topic(
               name: 'Test/Display Value',
-              type: NT4Type.array(NT4Type.double()),
+              type: NT3Type.array(NT3Type.double()),
               properties: {},
             ),
           ],
@@ -531,7 +531,7 @@ void main() {
         ),
         preferences: preferences,
         topic: 'Test/Display Value',
-        dataType: NT4Type.array(NT4Type.double()),
+        dataType: NT3Type.array(NT3Type.double()),
         period: 0.100,
         showSubmitButton: true,
       );
@@ -580,11 +580,11 @@ void main() {
       NTConnection stringArrNTConnection;
 
       TextDisplayModel textDisplayModel = TextDisplayModel(
-        ntConnection: stringArrNTConnection = createMockOnlineNT4(
+        ntConnection: stringArrNTConnection = createMockOnlineNT3(
           virtualTopics: [
-            NT4Topic(
+            NT3Topic(
               name: 'Test/Display Value',
-              type: NT4Type.array(NT4Type.string()),
+              type: NT3Type.array(NT3Type.string()),
               properties: {},
             ),
           ],
@@ -594,7 +594,7 @@ void main() {
         ),
         preferences: preferences,
         topic: 'Test/Display Value',
-        dataType: NT4Type.array(NT4Type.string()),
+        dataType: NT3Type.array(NT3Type.string()),
         period: 0.100,
         showSubmitButton: true,
       );
@@ -646,11 +646,11 @@ void main() {
       NTConnection stringNTConnection;
 
       TextDisplayModel textDisplayModel = TextDisplayModel(
-        ntConnection: stringNTConnection = createMockOnlineNT4(
+        ntConnection: stringNTConnection = createMockOnlineNT3(
           virtualTopics: [
-            NT4Topic(
+            NT3Topic(
               name: 'Test/Display Value',
-              type: NT4Type.string(),
+              type: NT3Type.string(),
               properties: {},
             ),
           ],
@@ -658,7 +658,7 @@ void main() {
         ),
         preferences: preferences,
         topic: 'Test/Display Value',
-        dataType: NT4Type.string(),
+        dataType: NT3Type.string(),
         period: 0.100,
         showSubmitButton: false,
       );
@@ -712,7 +712,7 @@ void main() {
       ntConnection: ntConnection,
       preferences: preferences,
       topic: 'Test/Display Value',
-      dataType: NT4Type.string(),
+      dataType: NT3Type.string(),
       period: 0.100,
       showSubmitButton: true,
     );

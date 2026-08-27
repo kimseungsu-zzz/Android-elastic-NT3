@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:dot_cast/dot_cast.dart';
 import 'package:provider/provider.dart';
 
-import 'package:elastic_dashboard/services/nt4_client.dart';
+import 'package:elastic_dashboard/services/nt3_client.dart';
 import 'package:elastic_dashboard/widgets/dialog_widgets/dialog_toggle_switch.dart';
 import 'package:elastic_dashboard/widgets/nt_widgets/nt_widget.dart';
 
@@ -14,16 +14,16 @@ class CommandModel extends MultiTopicNTWidgetModel {
   String get runningTopicName => '$topic/running';
   String get nameTopicName => '$topic/name';
 
-  late NT4Subscription runningSubscription;
-  late NT4Subscription nameSubscription;
+  late NT3Subscription runningSubscription;
+  late NT3Subscription nameSubscription;
 
   @override
-  List<NT4Subscription> get subscriptions => [
+  List<NT3Subscription> get subscriptions => [
     runningSubscription,
     nameSubscription,
   ];
 
-  NT4Topic? runningTopic;
+  NT3Topic? runningTopic;
 
   bool _showType = true;
 

@@ -6,7 +6,7 @@ import 'package:dot_cast/dot_cast.dart';
 import 'package:provider/provider.dart';
 import 'package:vector_math/vector_math_64.dart' show radians;
 
-import 'package:elastic_dashboard/services/nt4_client.dart';
+import 'package:elastic_dashboard/services/nt3_client.dart';
 import 'package:elastic_dashboard/widgets/dialog_widgets/dialog_toggle_switch.dart';
 import 'package:elastic_dashboard/widgets/nt_widgets/nt_widget.dart';
 
@@ -32,19 +32,19 @@ class BasicSwerveModel extends MultiTopicNTWidgetModel {
 
   String get robotAngleTopic => '$topic/Robot Angle';
 
-  late NT4Subscription frontLeftAngleSubscription;
-  late NT4Subscription frontLeftVelocitySubscription;
-  late NT4Subscription frontRightAngleSubscription;
-  late NT4Subscription frontRightVelocitySubscription;
-  late NT4Subscription backLeftAngleSubscription;
-  late NT4Subscription backLeftVelocitySubscription;
-  late NT4Subscription backRightAngleSubscription;
-  late NT4Subscription backRightVelocitySubscription;
+  late NT3Subscription frontLeftAngleSubscription;
+  late NT3Subscription frontLeftVelocitySubscription;
+  late NT3Subscription frontRightAngleSubscription;
+  late NT3Subscription frontRightVelocitySubscription;
+  late NT3Subscription backLeftAngleSubscription;
+  late NT3Subscription backLeftVelocitySubscription;
+  late NT3Subscription backRightAngleSubscription;
+  late NT3Subscription backRightVelocitySubscription;
 
-  late NT4Subscription robotAngleSubscription;
+  late NT3Subscription robotAngleSubscription;
 
   @override
-  List<NT4Subscription> get subscriptions => [
+  List<NT3Subscription> get subscriptions => [
     frontLeftAngleSubscription,
     frontLeftVelocitySubscription,
     frontRightAngleSubscription,
@@ -129,7 +129,7 @@ class BasicSwerveModel extends MultiTopicNTWidgetModel {
 
   @override
   void resetSubscription() {
-    for (NT4Subscription subscription in subscriptions) {
+    for (NT3Subscription subscription in subscriptions) {
       ntConnection.unSubscribe(subscription);
     }
 

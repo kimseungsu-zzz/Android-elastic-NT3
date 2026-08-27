@@ -60,7 +60,6 @@ class BooleanBoxModel extends SingleTopicNTWidgetModel {
     Color falseColor = Colors.red,
     String trueIcon = 'None',
     String falseIcon = 'None',
-    super.ntStructMeta,
     super.dataType,
     super.period,
   }) : _falseColor = falseColor,

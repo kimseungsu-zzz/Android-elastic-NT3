@@ -4,8 +4,7 @@ import 'package:dot_cast/dot_cast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:elastic_dashboard/services/log.dart';
-import 'package:elastic_dashboard/services/nt4_client.dart';
-import 'package:elastic_dashboard/services/nt4_type.dart';
+import 'package:elastic_dashboard/services/nt3_type.dart';
 import 'package:elastic_dashboard/services/nt_connection.dart';
 import 'package:elastic_dashboard/services/settings.dart';
 import 'package:elastic_dashboard/widgets/draggable_containers/draggable_widget_container.dart';
@@ -59,9 +58,8 @@ typedef NTModelProvider<T extends NTWidgetModel> =
       required NTConnection ntConnection,
       required SharedPreferences preferences,
       required String topic,
-      NT4Type? dataType,
+      NT3Type? dataType,
       double? period,
-      NT4StructMeta? ntStructMeta,
     });
 
 typedef MultiTopicNTModelProvider<T extends MultiTopicNTWidgetModel> =
@@ -441,10 +439,9 @@ class NTWidgetRegistry {
   static NTWidgetModel buildNTModelFromType(
     NTConnection ntConnection,
     SharedPreferences preferences,
-    NT4StructMeta? ntStructMeta,
     String type,
     String topic, {
-    NT4Type? dataType,
+    NT3Type? dataType,
     double? period,
   }) {
     period ??=
@@ -457,7 +454,6 @@ class NTWidgetRegistry {
         ntConnection: ntConnection,
         preferences: preferences,
         topic: topic,
-        ntStructMeta: ntStructMeta,
         dataType: dataType,
         period: period,
       );
@@ -468,7 +464,6 @@ class NTWidgetRegistry {
       preferences: preferences,
       type: type,
       topic: topic,
-      ntStructMeta: ntStructMeta,
       dataType: dataType,
       period: period,
     );
@@ -499,7 +494,7 @@ class NTWidgetRegistry {
       preferences: preferences,
       type: type,
       topic: tryCast(jsonData['topic']) ?? '',
-      dataType: NT4Type.parseNullable(tryCast(jsonData['data_type'])),
+      dataType: NT3Type.parseNullable(tryCast(jsonData['data_type'])),
       period: tryCast(jsonData['period']),
     );
   }
@@ -620,8 +615,7 @@ class NTWidgetRegistry {
           required SharedPreferences preferences,
           required String topic,
           double? period,
-          NT4Type? dataType,
-          NT4StructMeta? ntStructMeta,
+          NT3Type? dataType,
         }) => model(
           ntConnection: ntConnection,
           preferences: preferences,
@@ -652,8 +646,7 @@ class NTWidgetRegistry {
           required SharedPreferences preferences,
           required String topic,
           double? period,
-          NT4Type? dataType,
-          NT4StructMeta? ntStructMeta,
+          NT3Type? dataType,
         }) => SingleTopicNTWidgetModel.createDefault(
           ntConnection: ntConnection,
           preferences: preferences,
@@ -661,7 +654,6 @@ class NTWidgetRegistry {
           period: period,
           type: name,
           dataType: dataType,
-          ntStructMeta: ntStructMeta,
         ),
     widget: widget,
     fromJson:

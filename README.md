@@ -1,25 +1,25 @@
-# ![Elastic Logo](assets/logos/logo_full.png)
+# Elastic (NT3)
 
-[![Elastic](https://github.com/Gold872/elastic_dashboard/actions/workflows/elastic-ci.yml/badge.svg)](https://github.com/Gold872/elastic_dashboard/actions/workflows/elastic-ci.yml) [![codecov](https://codecov.io/gh/Gold872/elastic_dashboard/graph/badge.svg?token=4MQYW8SMQI)](https://codecov.io/gh/Gold872/elastic_dashboard)
+[![Elastic NT3](https://github.com/kimseungsu-zzz/elastic-NT3/actions/workflows/nt3-ci.yml/badge.svg)](https://github.com/kimseungsu-zzz/elastic-NT3/actions/workflows/nt3-ci.yml)
 
-A simple and modern dashboard for FRC.
+A desktop-focused fork of Elastic Dashboard for FRC robots that use the
+NetworkTables 3.0 protocol.
 
-Download files can be found [here](https://github.com/Gold872/elastic_dashboard/releases/latest), the supported platforms are Windows, MacOS, Linux, and Web.
-
-Try it in your browser! https://gold872.github.io/elastic_dashboard/
+The NT3 transport uses TCP port 1735. Because browsers cannot open raw TCP
+sockets, robot connectivity is supported on Windows, macOS, and Linux builds.
 
 ## About
 
-Elastic is a simple and modern FRC dashboard made by Nadav from FRC Team 353. It is meant to be used behind the glass as a competition driver dashboard, but it can also be used for testing. Some unique features include:
+Elastic (NT3) is intended for FRC robot projects using NetworkTables 3. It can
+be used as a competition driver dashboard or for testing. The application
+contains only the NT3 transport and NT3-compatible topic types.
+
+Core dashboard features include:
 * Customizable color scheme with over 20 variants
-* Subscription sharing to reduce bandwidth consumption
 * Optimized camera streams which automatically deactivate when not in use
 * Automatic height resizing to the FRC Driver Station
 
 ![Example Layout](/screenshots/example_layout.png)
-
-## Documentation
-View the online documentation [here](https://frc-elastic.gitbook.io/docs)
 
 ## Building and Contributing
 View the instructions for building code and making contributions to the project in the [CONTRIBUTING.md](CONTRIBUTING.md) file

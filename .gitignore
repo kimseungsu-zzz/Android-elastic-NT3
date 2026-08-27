@@ -12,8 +12,7 @@ migrate_working_dir/
 coverage/
 *.mocks.dart
 reports/
-.github/ipk_build/build/
-.github/ipk_build/*.ipk
+/dist/
 
 # IntelliJ related
 *.iml

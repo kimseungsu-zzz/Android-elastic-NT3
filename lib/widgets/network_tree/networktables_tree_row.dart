@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:collection/collection.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:elastic_dashboard/services/nt4_type.dart';
+import 'package:elastic_dashboard/services/nt3_type.dart';
 import 'package:elastic_dashboard/services/nt_connection.dart';
 import 'package:elastic_dashboard/services/nt_widget_registry.dart';
 import 'package:elastic_dashboard/services/settings.dart';
@@ -122,15 +122,14 @@ class NetworkTableTreeRow {
     SharedPreferences preferences,
     TreeTopicEntry entry,
   ) {
-    NT4Type entryType = entry.type;
+    NT3Type entryType = entry.type;
 
-    if (entryType.dataType == NT4DataType.boolean) {
+    if (entryType.dataType == NT3DataType.boolean) {
       return BooleanBoxModel(
         ntConnection: ntConnection,
         preferences: preferences,
         topic: entry.topic.name,
         dataType: entryType,
-        ntStructMeta: entry.meta,
       );
     } else if (entryType.isViewable) {
       return TextDisplayModel(
@@ -138,7 +137,6 @@ class NetworkTableTreeRow {
         preferences: preferences,
         topic: entry.topic.name,
         dataType: entryType,
-        ntStructMeta: entry.meta,
       );
     }
 
@@ -201,7 +199,6 @@ class NetworkTableTreeRow {
     return NTWidgetRegistry.buildNTModelFromType(
       ntConnection,
       preferences,
-      entry?.meta,
       type,
       topic,
     );

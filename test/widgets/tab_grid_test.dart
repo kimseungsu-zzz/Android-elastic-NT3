@@ -81,7 +81,7 @@ void main() async {
         home: Scaffold(
           body: ChangeNotifierProvider<TabGridModel>.value(
             value: TabGridModel.fromJson(
-              ntConnection: createMockOfflineNT4(),
+              ntConnection: createMockOfflineNT3(),
               preferences: preferences,
               jsonData: jsonData['tabs'][0]['grid_layout'],
               onAddWidgetPressed: () {},
@@ -130,7 +130,7 @@ void main() async {
         home: Scaffold(
           body: ChangeNotifierProvider<TabGridModel>.value(
             value: TabGridModel.fromJson(
-              ntConnection: createMockOfflineNT4(),
+              ntConnection: createMockOfflineNT3(),
               preferences: preferences,
               jsonData: jsonData['tabs'][1]['grid_layout'],
               onAddWidgetPressed: () {},
@@ -172,7 +172,7 @@ void main() async {
         home: Scaffold(
           body: ChangeNotifierProvider<TabGridModel>.value(
             value: TabGridModel.fromJson(
-              ntConnection: createMockOfflineNT4(),
+              ntConnection: createMockOfflineNT3(),
               preferences: preferences,
               jsonData: jsonData['tabs'][0]['grid_layout'],
               onAddWidgetPressed: () {},
@@ -249,7 +249,7 @@ void main() async {
         home: Scaffold(
           body: ChangeNotifierProvider<TabGridModel>.value(
             value: TabGridModel.fromJson(
-              ntConnection: createMockOfflineNT4(),
+              ntConnection: createMockOfflineNT3(),
               preferences: preferences,
               jsonData: jsonData['tabs'][0]['grid_layout'],
               onAddWidgetPressed: () {},
@@ -315,7 +315,7 @@ void main() async {
         home: Scaffold(
           body: ChangeNotifierProvider<TabGridModel>.value(
             value: TabGridModel.fromJson(
-              ntConnection: createMockOfflineNT4(),
+              ntConnection: createMockOfflineNT3(),
               preferences: preferences,
               jsonData: jsonData['tabs'][0]['grid_layout'],
               onAddWidgetPressed: () {},
@@ -367,7 +367,7 @@ void main() async {
     expect(jsonData['tabs'][1].containsValue('Autonomous'), true);
     expect(jsonData['tabs'][1].containsKey('grid_layout'), true);
 
-    MockNTConnection ntConnection = createMockOnlineNT4();
+    MockNTConnection ntConnection = createMockOnlineNT3();
 
     TabGridModel tabGridModel = TabGridModel.fromJson(
       ntConnection: ntConnection,

@@ -4,8 +4,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:elastic_dashboard/services/nt4_client.dart';
-import 'package:elastic_dashboard/services/nt4_type.dart';
+import 'package:elastic_dashboard/services/nt3_client.dart';
+import 'package:elastic_dashboard/services/nt3_type.dart';
 import 'package:elastic_dashboard/services/nt_connection.dart';
 import 'package:elastic_dashboard/services/nt_widget_registry.dart';
 import 'package:elastic_dashboard/widgets/nt_widgets/multi_topic/power_distribution.dart';
@@ -27,14 +27,14 @@ void main() {
     SharedPreferences.setMockInitialValues({});
     preferences = await SharedPreferences.getInstance();
 
-    List<NT4Topic> channelTopics = [];
+    List<NT3Topic> channelTopics = [];
     Map<String, double> virtualChannelValues = {};
 
     for (int i = 0; i <= PowerDistributionModel.numberOfChannels; i++) {
       channelTopics.add(
-        NT4Topic(
+        NT3Topic(
           name: 'Test/Power Distribution/Chan$i',
-          type: NT4Type.float(),
+          type: NT3Type.double(),
           properties: {},
         ),
       );
@@ -42,16 +42,16 @@ void main() {
       virtualChannelValues.addAll({'Test/Power Distribution/Chan$i': 0.00});
     }
 
-    ntConnection = createMockOnlineNT4(
+    ntConnection = createMockOnlineNT3(
       virtualTopics: [
-        NT4Topic(
+        NT3Topic(
           name: 'Test/Power Distribution/Voltage',
-          type: NT4Type.float(),
+          type: NT3Type.double(),
           properties: {},
         ),
-        NT4Topic(
+        NT3Topic(
           name: 'Test/Power Distribution/TotalCurrent',
-          type: NT4Type.float(),
+          type: NT3Type.double(),
           properties: {},
         ),
         ...channelTopics,

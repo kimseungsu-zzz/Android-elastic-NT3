@@ -5,8 +5,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:elastic_dashboard/services/nt4_client.dart';
-import 'package:elastic_dashboard/services/nt4_type.dart';
+import 'package:elastic_dashboard/services/nt3_client.dart';
+import 'package:elastic_dashboard/services/nt3_type.dart';
 import 'package:elastic_dashboard/services/nt_connection.dart';
 import 'package:elastic_dashboard/services/nt_widget_registry.dart';
 import 'package:elastic_dashboard/widgets/nt_widgets/nt_widget.dart';
@@ -18,7 +18,7 @@ void main() {
 
   final Map<String, dynamic> singleColorViewJson = {
     'topic': 'Test/String Value',
-    'data_type': NT4Type.string().serialize(),
+    'data_type': NT3Type.string().serialize(),
     'period': 0.100,
   };
 
@@ -38,11 +38,11 @@ void main() {
     SharedPreferences.setMockInitialValues({});
     preferences = await SharedPreferences.getInstance();
 
-    ntConnection = createMockOnlineNT4(
+    ntConnection = createMockOnlineNT3(
       virtualTopics: [
-        NT4Topic(
+        NT3Topic(
           name: 'Test/String Value',
-          type: NT4Type.string(),
+          type: NT3Type.string(),
           properties: {},
         ),
       ],
@@ -81,7 +81,7 @@ void main() {
       preferences: preferences,
       type: 'Single Color View',
       topic: 'Test/String Value',
-      dataType: NT4Type.string(),
+      dataType: NT3Type.string(),
       period: 0.100,
     );
 

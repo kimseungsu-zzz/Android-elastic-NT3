@@ -465,43 +465,6 @@ class _SettingsDialogState extends State<SettingsDialog> {
       child: Text('Network Tables Settings'),
     ),
     const SizedBox(height: 5),
-    Row(
-      children: [
-        Tooltip(
-          waitDuration: const Duration(milliseconds: 100),
-          message: '''
-There are 2 Network Tables servers on the SystemCore:
-
-Robot Code - The Network Tables server displaying data from the robot code.
-SystemCore Internal - The Network Tables server displaying internal data from the SystemCore (RAM, CPU, etc).''',
-          child: Icon(Icons.help_outline),
-        ),
-        const SizedBox(width: 5),
-        const Text('Target Server'),
-        const SizedBox(width: 5),
-        Flexible(
-          child: DialogDropdownChooser<NTServerTarget>(
-            onSelectionChanged: (mode) async {
-              if (mode == null) {
-                return;
-              }
-
-              await widget.onNTTargetServerChanged?.call(mode);
-
-              setState(() {});
-            },
-            choices: NTServerTarget.values,
-            initialValue:
-                NTServerTarget.fromIndex(
-                  widget.preferences.getInt(PrefKeys.ntTargetServer),
-                ) ??
-                Defaults.targetServer,
-            nameMap: (e) => e.name,
-          ),
-        ),
-      ],
-    ),
-    const SizedBox(height: 5),
     Flexible(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,

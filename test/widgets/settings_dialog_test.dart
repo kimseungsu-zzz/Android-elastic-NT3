@@ -101,7 +101,7 @@ void main() {
       MaterialApp(
         home: Scaffold(
           body: SettingsDialog(
-            ntConnection: createMockOfflineNT4(),
+            ntConnection: createMockOfflineNT3(),
             preferences: preferences,
           ),
         ),
@@ -119,7 +119,7 @@ void main() {
     expect(find.text('Team Number'), findsOneWidget);
     expect(find.text('IP Address Mode'), findsOneWidget);
     expect(find.text('IP Address'), findsOneWidget);
-    expect(find.text('Target Server'), findsOneWidget);
+    expect(find.text('Target Server'), findsNothing);
     expect(find.text('Default Period'), findsOneWidget);
     expect(find.text('Default Graph Period'), findsOneWidget);
 
@@ -178,7 +178,7 @@ void main() {
       MaterialApp(
         home: Scaffold(
           body: SettingsDialog(
-            ntConnection: createMockOfflineNT4(),
+            ntConnection: createMockOfflineNT3(),
             preferences: preferences,
             onTeamNumberChanged: (data) async {
               fakeSettings.changeTeamNumber();
@@ -216,7 +216,7 @@ void main() {
       MaterialApp(
         home: Scaffold(
           body: SettingsDialog(
-            ntConnection: createMockOfflineNT4(),
+            ntConnection: createMockOfflineNT3(),
             preferences: preferences,
             onIPAddressModeChanged: (mode) {
               fakeSettings.changeIPAddressMode();
@@ -263,7 +263,7 @@ void main() {
       MaterialApp(
         home: Scaffold(
           body: SettingsDialog(
-            ntConnection: createMockOfflineNT4(),
+            ntConnection: createMockOfflineNT3(),
             preferences: preferences,
             onIPAddressChanged: (data) async {
               fakeSettings.changeIPAddress();
@@ -289,63 +289,6 @@ void main() {
     verify(fakeSettings.changeIPAddress()).called(greaterThanOrEqualTo(1));
   });
 
-  testWidgets('Change NT server mode', (widgetTester) async {
-    FlutterError.onError = ignoreOverflowErrors;
-
-    await widgetTester.pumpWidget(
-      MaterialApp(
-        home: Scaffold(
-          body: SettingsDialog(
-            ntConnection: createMockOfflineNT4(),
-            preferences: preferences,
-            onNTTargetServerChanged: (mode) async {
-              fakeSettings.changeNTServerMode();
-
-              await preferences.setInt(PrefKeys.ntTargetServer, mode.index);
-            },
-          ),
-        ),
-      ),
-    );
-
-    await widgetTester.pumpAndSettle();
-
-    final ntServerMode = find.byType(DialogDropdownChooser<NTServerTarget>);
-
-    expect(ntServerMode, findsOneWidget);
-
-    expect(find.text('Robot Code'), findsOneWidget);
-
-    await widgetTester.tap(ntServerMode);
-    await widgetTester.pumpAndSettle();
-
-    expect(find.text('SystemCore Internal'), findsOneWidget);
-
-    await widgetTester.tap(find.text('SystemCore Internal'));
-    await widgetTester.pumpAndSettle();
-
-    expect(find.text('Robot Code'), findsNothing);
-    expect(find.text('SystemCore Internal'), findsOneWidget);
-    expect(
-      preferences.getInt(PrefKeys.ntTargetServer),
-      NTServerTarget.systemCore.index,
-    );
-
-    await widgetTester.tap(find.text('SystemCore Internal'));
-    await widgetTester.pumpAndSettle();
-
-    expect(find.text('Robot Code'), findsOneWidget);
-
-    await widgetTester.tap(find.text('Robot Code'));
-    await widgetTester.pumpAndSettle();
-    expect(
-      preferences.getInt(PrefKeys.ntTargetServer),
-      NTServerTarget.robotCode.index,
-    );
-
-    verify(fakeSettings.changeNTServerMode()).called(2);
-  });
-
   testWidgets('Change default period', (widgetTester) async {
     FlutterError.onError = ignoreOverflowErrors;
 
@@ -353,7 +296,7 @@ void main() {
       MaterialApp(
         home: Scaffold(
           body: SettingsDialog(
-            ntConnection: createMockOfflineNT4(),
+            ntConnection: createMockOfflineNT3(),
             preferences: preferences,
             onDefaultPeriodChanged: (period) async {
               fakeSettings.changeDefaultPeriod();
@@ -389,7 +332,7 @@ void main() {
       MaterialApp(
         home: Scaffold(
           body: SettingsDialog(
-            ntConnection: createMockOfflineNT4(),
+            ntConnection: createMockOfflineNT3(),
             preferences: preferences,
             onDefaultGraphPeriodChanged: (period) async {
               fakeSettings.changeDefaultGraphPeriod();
@@ -430,7 +373,7 @@ void main() {
       MaterialApp(
         home: Scaffold(
           body: SettingsDialog(
-            ntConnection: createMockOnlineNT4(),
+            ntConnection: createMockOnlineNT3(),
             preferences: preferences,
             onColorChanged: (color) async {
               fakeSettings.changeColor();
@@ -494,7 +437,7 @@ void main() {
       MaterialApp(
         home: Scaffold(
           body: SettingsDialog(
-            ntConnection: createMockOfflineNT4(),
+            ntConnection: createMockOfflineNT3(),
             onThemeVariantChanged: (variant) async {
               fakeSettings.changeThemeVariant();
 
@@ -561,7 +504,7 @@ void main() {
       MaterialApp(
         home: Scaffold(
           body: SettingsDialog(
-            ntConnection: createMockOfflineNT4(),
+            ntConnection: createMockOfflineNT3(),
             preferences: preferences,
             onGridToggle: (value) async {
               fakeSettings.changeShowGrid();
@@ -611,7 +554,7 @@ void main() {
       MaterialApp(
         home: Scaffold(
           body: SettingsDialog(
-            ntConnection: createMockOfflineNT4(),
+            ntConnection: createMockOfflineNT3(),
             preferences: preferences,
             onGridSizeChanged: (gridSize) async {
               fakeSettings.changeGridSize();
@@ -643,13 +586,13 @@ void main() {
 
   testWidgets('Change corner radius', (widgetTester) async {
     FlutterError.onError = ignoreOverflowErrors;
-    createMockOfflineNT4();
+    createMockOfflineNT3();
 
     await widgetTester.pumpWidget(
       MaterialApp(
         home: Scaffold(
           body: SettingsDialog(
-            ntConnection: createMockOfflineNT4(),
+            ntConnection: createMockOfflineNT3(),
             preferences: preferences,
             onCornerRadiusChanged: (radius) async {
               fakeSettings.changeCornerRadius();
@@ -692,7 +635,7 @@ void main() {
       MaterialApp(
         home: Scaffold(
           body: SettingsDialog(
-            ntConnection: createMockOfflineNT4(),
+            ntConnection: createMockOfflineNT3(),
             preferences: preferences,
             onResizeToDSChanged: (value) async {
               fakeSettings.changeDSAutoResize();
@@ -745,7 +688,7 @@ void main() {
       MaterialApp(
         home: Scaffold(
           body: SettingsDialog(
-            ntConnection: createMockOfflineNT4(),
+            ntConnection: createMockOfflineNT3(),
             preferences: preferences,
             onRememberWindowPositionChanged: (value) async {
               fakeSettings.changeRememberWindow();
@@ -799,7 +742,7 @@ void main() {
         home: Scaffold(
           body: SettingsDialog(
             preferences: preferences,
-            ntConnection: createMockOfflineNT4(),
+            ntConnection: createMockOfflineNT3(),
             onLayoutLock: (value) async {
               fakeSettings.changeLockLayout();
 
@@ -852,7 +795,7 @@ void main() {
         home: Scaffold(
           body: SettingsDialog(
             preferences: preferences,
-            ntConnection: createMockOfflineNT4(),
+            ntConnection: createMockOfflineNT3(),
             onAutoSubmitButtonChanged: (value) async {
               fakeSettings.changeAutoSubmitButton();
 
@@ -907,7 +850,7 @@ void main() {
       MaterialApp(
         home: Scaffold(
           body: SettingsDialog(
-            ntConnection: createMockOfflineNT4(),
+            ntConnection: createMockOfflineNT3(),
             onLogLevelChanged: (level) async {
               fakeSettings.changeLogLevel();
 
@@ -970,7 +913,7 @@ void main() {
         home: Scaffold(
           body: SettingsDialog(
             preferences: preferences,
-            ntConnection: createMockOfflineNT4(),
+            ntConnection: createMockOfflineNT3(),
             onGridDPIChanged: (value) async {
               fakeSettings.changeGridDPIOverride();
 
@@ -1025,7 +968,7 @@ void main() {
         home: Scaffold(
           body: SettingsDialog(
             preferences: preferences,
-            ntConnection: createMockOfflineNT4(),
+            ntConnection: createMockOfflineNT3(),
             onOpenAssetsFolderPressed: () {
               fakeSettings.openAssetsFolder();
             },

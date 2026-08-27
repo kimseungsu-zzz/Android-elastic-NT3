@@ -7,7 +7,7 @@ import 'package:dot_cast/dot_cast.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:provider/provider.dart';
 
-import 'package:elastic_dashboard/services/nt4_client.dart';
+import 'package:elastic_dashboard/services/nt3_client.dart';
 import 'package:elastic_dashboard/services/text_formatter_builder.dart';
 import 'package:elastic_dashboard/widgets/dialog_widgets/dialog_color_picker.dart';
 import 'package:elastic_dashboard/widgets/dialog_widgets/dialog_text_input.dart';
@@ -77,7 +77,6 @@ class GraphModel extends SingleTopicNTWidgetModel {
     double? maxValue,
     Color mainColor = Colors.cyan,
     double lineWidth = 2.0,
-    super.ntStructMeta,
     super.dataType,
     super.period,
   }) : _timeDisplayed = timeDisplayed,
@@ -241,7 +240,7 @@ class GraphWidget extends NTWidget {
 }
 
 class _GraphWidgetGraph extends StatefulWidget {
-  final NT4Subscription? subscription;
+  final NT3Subscription? subscription;
   final double? minValue;
   final double? maxValue;
   final Color mainColor;

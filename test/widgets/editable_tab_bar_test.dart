@@ -37,7 +37,7 @@ void main() {
     tabBarFunctions = FakeTabBarFunctions();
     SharedPreferences.setMockInitialValues({});
     preferences = await SharedPreferences.getInstance();
-    mockNTConnection = createMockOfflineNT4();
+    mockNTConnection = createMockOfflineNT3();
   });
 
   testWidgets('Editable tab bar', (widgetTester) async {

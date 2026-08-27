@@ -1,17 +1,13 @@
-import 'dart:convert';
-import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:elastic_dashboard/services/nt4_client.dart';
-import 'package:elastic_dashboard/services/nt4_type.dart';
+import 'package:elastic_dashboard/services/nt3_client.dart';
+import 'package:elastic_dashboard/services/nt3_type.dart';
 import 'package:elastic_dashboard/services/nt_connection.dart';
 import 'package:elastic_dashboard/services/nt_widget_registry.dart';
-import 'package:elastic_dashboard/services/struct_schemas/nt_struct.dart';
 import 'package:elastic_dashboard/widgets/nt_widgets/multi_topic/driver_station_info.dart';
 import 'package:elastic_dashboard/widgets/nt_widgets/nt_widget.dart';
 import '../../../test_util.dart';
@@ -27,17 +23,6 @@ void main() {
   late SharedPreferences preferences;
   late NTConnection ntConnection;
 
-  final String controlWordSchema =
-      'uint64 opModeHash:56;'
-      'enum{unknown=0,autonomous=1,teleoperated=2,utility=3} uint64 robotMode:2;'
-      'bool enabled:1;bool eStop:1;bool fmsAttached:1;bool dsAttached:1;';
-
-  final SchemaManager schemaManager = SchemaManager();
-  schemaManager.processNewSchema(
-    'ControlWord',
-    utf8.encode(controlWordSchema),
-  );
-
   NTConnection createNTConnection({
     String eventName = '',
     bool redAlliance = false,
@@ -47,81 +32,55 @@ void main() {
     bool enabled = false,
     bool teleop = false,
     bool auto = false,
-    bool utility = false,
+    bool testMode = false,
     bool estop = false,
     bool fmsAttached = false,
     bool dsAttached = false,
   }) {
-    Uint8List controlWord = Uint8List(8);
+    int controlWord = 0;
+    if (enabled) controlWord |= 0x01;
+    if (auto) controlWord |= 0x02;
+    if (testMode) controlWord |= 0x04;
+    if (estop) controlWord |= 0x08;
+    if (fmsAttached) controlWord |= 0x10;
+    if (dsAttached) controlWord |= 0x20;
 
-    // Robot mode: bits 56:57
-    int robotMode = 0;
-    if (auto) {
-      robotMode = 1;
-    } else if (teleop) {
-      robotMode = 2;
-    } else if (utility) {
-      robotMode = 3;
-    }
-    controlWord[56 ~/ 8] |= ((robotMode & 0x3) << (56 % 8));
-
-    // Enabled: bit 58
-    if (enabled) {
-      controlWord[58 ~/ 8] |= (1 << (58 % 8));
-    }
-
-    // Estop: bit 59
-    if (estop) {
-      controlWord[59 ~/ 8] |= (1 << (59 % 8));
-    }
-
-    // fmsAttached: bit 60
-    if (fmsAttached) {
-      controlWord[60 ~/ 8] |= (1 << (60 % 8));
-    }
-
-    // dsAttached: bit 61
-    if (dsAttached) {
-      controlWord[61 ~/ 8] |= (1 << (61 % 8));
-    }
-
-    return createMockOnlineNT4(
-      schemaManager: schemaManager,
+    return createMockOnlineNT3(
       virtualTopics: [
-        NT4Topic(
+        NT3Topic(
           name: 'Test/DSInfo/MatchState/EventName',
-          type: NT4Type.string(),
+          type: NT3Type.string(),
           properties: {},
         ),
-        NT4Topic(
-          name: 'Test/DSInfo/ControlWord',
-          type: NT4Type.struct('ControlWord'),
+        NT3Topic(
+          name: 'Test/DSInfo/FMSControlData',
+          type: NT3Type.double(),
           properties: {},
         ),
-        NT4Topic(
+        NT3Topic(
           name: 'Test/DSInfo/MatchState/IsRedAlliance',
-          type: NT4Type.boolean(),
+          type: NT3Type.boolean(),
           properties: {},
         ),
-        NT4Topic(
+        NT3Topic(
           name: 'Test/DSInfo/MatchState/MatchNumber',
-          type: NT4Type.int(),
+          type: NT3Type.double(),
           properties: {},
         ),
-        NT4Topic(
+        NT3Topic(
           name: 'Test/DSInfo/MatchState/MatchType',
-          type: NT4Type.int(),
+          type: NT3Type.double(),
           properties: {},
         ),
-        NT4Topic(
+        NT3Topic(
           name: 'Test/DSInfo/MatchState/ReplayNumber',
-          type: NT4Type.int(),
+          type: NT3Type.double(),
           properties: {},
         ),
       ],
       virtualValues: {
         'Test/DSInfo/MatchState/EventName': eventName,
-        'Test/DSInfo/ControlWord': controlWord,
+        'Test/DSInfo/FMSControlData': controlWord.toDouble(),
         'Test/DSInfo/MatchState/IsRedAlliance': redAlliance,
         'Test/DSInfo/MatchState/MatchNumber': matchNumber,
         'Test/DSInfo/MatchState/MatchType': matchType,
@@ -291,7 +250,7 @@ void main() {
     );
   });
 
-  testWidgets('DSInfo Unkown Match, utility enabled', (widgetTester) async {
+  testWidgets('DSInfo Unknown Match, test enabled', (widgetTester) async {
     FlutterError.onError = ignoreOverflowErrors;
 
     await pushDSInfoWidget(
@@ -303,7 +262,7 @@ void main() {
         matchType: 0,
         replayNumber: 0,
         enabled: true,
-        utility: true,
+        testMode: true,
         fmsAttached: false,
         dsAttached: true,
       ),
@@ -317,7 +276,7 @@ void main() {
     expect(find.byIcon(Icons.check), findsNWidgets(1));
     expect(find.byIcon(Icons.clear), findsNWidgets(1));
 
-    expect(find.text('Robot State: Utility'), findsOneWidget);
+    expect(find.text('Robot State: Test'), findsOneWidget);
     expect(
       find.byWidgetPredicate(
         (widget) =>

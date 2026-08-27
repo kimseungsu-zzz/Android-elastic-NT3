@@ -5,26 +5,26 @@ import 'package:flutter/material.dart';
 import 'package:dot_cast/dot_cast.dart';
 import 'package:provider/provider.dart';
 
-import 'package:elastic_dashboard/services/nt4_client.dart';
-import 'package:elastic_dashboard/services/nt4_type.dart';
+import 'package:elastic_dashboard/services/nt3_client.dart';
+import 'package:elastic_dashboard/services/nt3_type.dart';
 import 'package:elastic_dashboard/widgets/nt_widgets/nt_widget.dart';
 
 class CommandSchedulerModel extends MultiTopicNTWidgetModel {
   @override
   String type = CommandSchedulerWidget.widgetType;
 
-  NT4Topic? _cancelTopic;
+  NT3Topic? _cancelTopic;
 
   String get namesTopicName => '$topic/Names';
   String get idsTopicName => '$topic/Ids';
   String get cancelTopicName => '$topic/Cancel';
 
-  late NT4Subscription namesSubscription;
-  late NT4Subscription idsSubscription;
-  late NT4Subscription cancelSubscription;
+  late NT3Subscription namesSubscription;
+  late NT3Subscription idsSubscription;
+  late NT3Subscription cancelSubscription;
 
   @override
-  List<NT4Subscription> get subscriptions => [
+  List<NT3Subscription> get subscriptions => [
     namesSubscription,
     idsSubscription,
     cancelSubscription,
@@ -69,7 +69,7 @@ class CommandSchedulerModel extends MultiTopicNTWidgetModel {
 
     _cancelTopic ??= ntConnection.publishNewTopic(
       cancelTopicName,
-      NT4Type.array(NT4Type.int()),
+      NT3Type.array(NT3Type.double()),
     );
 
     if (_cancelTopic == null) {

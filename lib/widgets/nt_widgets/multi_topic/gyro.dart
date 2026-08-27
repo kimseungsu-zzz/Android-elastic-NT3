@@ -6,7 +6,7 @@ import 'package:dot_cast/dot_cast.dart';
 import 'package:geekyants_flutter_gauges/geekyants_flutter_gauges.dart';
 import 'package:provider/provider.dart';
 
-import 'package:elastic_dashboard/services/nt4_client.dart';
+import 'package:elastic_dashboard/services/nt3_client.dart';
 import 'package:elastic_dashboard/widgets/dialog_widgets/dialog_toggle_switch.dart';
 import 'package:elastic_dashboard/widgets/nt_widgets/nt_widget.dart';
 
@@ -16,10 +16,10 @@ class GyroModel extends MultiTopicNTWidgetModel {
 
   String get valueTopic => '$topic/Value';
 
-  late NT4Subscription valueSubscription;
+  late NT3Subscription valueSubscription;
 
   @override
-  List<NT4Subscription> get subscriptions => [valueSubscription];
+  List<NT3Subscription> get subscriptions => [valueSubscription];
 
   bool _counterClockwisePositive = false;
 

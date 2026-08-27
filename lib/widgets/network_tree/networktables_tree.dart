@@ -6,10 +6,9 @@ import 'package:collection/collection.dart';
 import 'package:flutter_fancy_tree_view/flutter_fancy_tree_view.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:elastic_dashboard/services/nt4_client.dart';
-import 'package:elastic_dashboard/services/nt4_type.dart';
+import 'package:elastic_dashboard/services/nt3_client.dart';
+import 'package:elastic_dashboard/services/nt3_type.dart';
 import 'package:elastic_dashboard/services/nt_connection.dart';
-import 'package:elastic_dashboard/services/struct_schemas/nt_struct.dart';
 import 'package:elastic_dashboard/widgets/draggable_containers/models/list_layout_model.dart';
 import 'package:elastic_dashboard/widgets/draggable_containers/models/nt_widget_container_model.dart';
 import 'package:elastic_dashboard/widgets/draggable_containers/models/widget_container_model.dart';
@@ -62,14 +61,14 @@ class _NetworkTableTreeState extends State<NetworkTableTree> {
   );
   late final TreeController<NetworkTableTreeRow> treeController;
 
-  void onTopicAnnounced(NT4Topic topic) {
+  void onTopicAnnounced(NT3Topic topic) {
     treeController.roots = _filterChildren(root.children);
     if (mounted) {
       setState(() {});
     }
   }
 
-  void onTopicUnannounced(NT4Topic topic) {
+  void onTopicUnannounced(NT3Topic topic) {
     root.clearRows();
     if (mounted) {
       setState(() {});
@@ -162,10 +161,7 @@ class _NetworkTableTreeState extends State<NetworkTableTree> {
       topic = '/$topic';
     }
 
-    List<String> rows = [
-      ...topic.substring(1).split('/'),
-      ...?entry.meta?.path,
-    ];
+    List<String> rows = topic.substring(1).split('/');
     NetworkTableTreeRow current = root;
     String currentTopic = '';
 
@@ -190,58 +186,16 @@ class _NetworkTableTreeState extends State<NetworkTableTree> {
     }
   }
 
-  List<TreeTopicEntry> parseStruct(
-    NT4Topic topic,
-    NTStructSchema schema,
-    NTStructSchema root,
-    List<String> structPath,
-  ) {
-    List<TreeTopicEntry> topics = [];
-
-    for (NTFieldSchema field in schema.fields) {
-      topics.add(
-        TreeTopicEntry(
-          topic: topic,
-          meta: NT4StructMeta(
-            path: [...structPath, field.fieldName],
-            schemaName: root.name,
-            schema: root,
-          ),
-        ),
-      );
-      if (field.subSchema != null && !field.isArray) {
-        topics.addAll(
-          parseStruct(topic, field.subSchema!, root, [
-            ...structPath,
-            field.fieldName,
-          ]),
-        );
-      }
-    }
-
-    return topics;
-  }
-
   @override
   Widget build(BuildContext context) {
     List<TreeTopicEntry> topics = [];
 
-    for (NT4Topic topic in widget.ntConnection.announcedTopics().values) {
+    for (NT3Topic topic in widget.ntConnection.announcedTopics().values) {
       if (topic.name == 'Time') {
         continue;
       }
 
       topics.add(TreeTopicEntry(topic: topic));
-
-      if (topic.type.isStruct) {
-        NTStructSchema? schema = widget.ntConnection.schemaManager.getSchema(
-          topic.type.name,
-        );
-
-        if (schema != null && !topic.type.isArray) {
-          topics.addAll(parseStruct(topic, schema, schema, []));
-        }
-      }
     }
 
     for (TreeTopicEntry topic in topics) {
@@ -277,17 +231,16 @@ class _NetworkTableTreeState extends State<NetworkTableTree> {
 }
 
 class TreeTopicEntry {
-  final NT4Topic topic;
-  final NT4StructMeta? meta;
+  final NT3Topic topic;
 
-  NT4Type get type => meta?.type ?? topic.type;
+  NT3Type get type => topic.type;
 
-  TreeTopicEntry({required this.topic, this.meta});
+  TreeTopicEntry({required this.topic});
 
   @override
   String toString() {
-    String topicData = 'NT4Topic(name: ${topic.name}, type: ${topic.type})';
-    return 'TreeTopicEntry{topic: $topicData, meta: $meta}';
+    String topicData = 'NT3Topic(name: ${topic.name}, type: ${topic.type})';
+    return 'TreeTopicEntry{topic: $topicData}';
   }
 }
 

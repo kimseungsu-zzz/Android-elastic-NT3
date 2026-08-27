@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:dot_cast/dot_cast.dart';
 import 'package:provider/provider.dart';
 
-import 'package:elastic_dashboard/services/nt4_client.dart';
+import 'package:elastic_dashboard/services/nt3_client.dart';
 import 'package:elastic_dashboard/widgets/nt_widgets/nt_widget.dart';
 
 class PowerDistributionModel extends MultiTopicNTWidgetModel {
@@ -17,13 +17,13 @@ class PowerDistributionModel extends MultiTopicNTWidgetModel {
   String get voltageTopic => '$topic/Voltage';
   String get currentTopic => '$topic/TotalCurrent';
 
-  late NT4Subscription voltageSubscription;
-  late NT4Subscription currentSubscription;
+  late NT3Subscription voltageSubscription;
+  late NT3Subscription currentSubscription;
 
-  final List<NT4Subscription> channelSubscriptions = [];
+  final List<NT3Subscription> channelSubscriptions = [];
 
   @override
-  List<NT4Subscription> get subscriptions => [
+  List<NT3Subscription> get subscriptions => [
     voltageSubscription,
     currentSubscription,
     ...channelSubscriptions,

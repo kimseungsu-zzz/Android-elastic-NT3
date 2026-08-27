@@ -5,25 +5,20 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import 'package:elegant_notification/elegant_notification.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:http/http.dart';
-import 'package:mockito/mockito.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:titlebar_buttons/titlebar_buttons.dart';
 
 import 'package:elastic_dashboard/pages/dashboard_page.dart';
-import 'package:elastic_dashboard/services/elastic_layout_downloader.dart';
 import 'package:elastic_dashboard/services/field_images.dart';
 import 'package:elastic_dashboard/services/hotkey_manager.dart';
 import 'package:elastic_dashboard/services/ip_address_util.dart';
-import 'package:elastic_dashboard/services/nt4_client.dart';
-import 'package:elastic_dashboard/services/nt4_type.dart';
+import 'package:elastic_dashboard/services/nt3_client.dart';
+import 'package:elastic_dashboard/services/nt3_type.dart';
 import 'package:elastic_dashboard/services/nt_connection.dart';
 import 'package:elastic_dashboard/services/settings.dart';
 import 'package:elastic_dashboard/services/update_checker.dart';
 import 'package:elastic_dashboard/widgets/custom_appbar.dart';
-import 'package:elastic_dashboard/widgets/dialog_widgets/dialog_dropdown_chooser.dart';
 import 'package:elastic_dashboard/widgets/dialog_widgets/dialog_text_input.dart';
 import 'package:elastic_dashboard/widgets/dialog_widgets/layout_drag_tile.dart';
 import 'package:elastic_dashboard/widgets/draggable_containers/draggable_list_layout.dart';
@@ -32,11 +27,9 @@ import 'package:elastic_dashboard/widgets/draggable_dialog.dart';
 import 'package:elastic_dashboard/widgets/editable_tab_bar.dart';
 import 'package:elastic_dashboard/widgets/network_tree/networktables_tree.dart';
 import 'package:elastic_dashboard/widgets/nt_widgets/multi_topic/combo_box_chooser.dart';
-import 'package:elastic_dashboard/widgets/nt_widgets/multi_topic/gyro.dart';
 import 'package:elastic_dashboard/widgets/nt_widgets/single_topic/boolean_box.dart';
 import 'package:elastic_dashboard/widgets/settings_dialog.dart';
 import 'package:elastic_dashboard/widgets/tab_grid.dart';
-import '../services/elastic_layout_downloader_test.dart';
 import '../test_util.dart';
 import '../test_util.mocks.dart';
 
@@ -44,7 +37,6 @@ Future<void> pumpDashboardPage(
   WidgetTester widgetTester,
   SharedPreferences preferences, {
   NTConnection? ntConnection,
-  ElasticLayoutDownloader? layoutDownloader,
   UpdateChecker? updateChecker,
   Size? size = const Size(1920, 1080),
 }) async {
@@ -58,11 +50,10 @@ Future<void> pumpDashboardPage(
     MaterialApp(
       home: DashboardPage(
         model: DashboardPageViewModelImpl(
-          ntConnection: ntConnection ?? createMockOfflineNT4(),
+          ntConnection: ntConnection ?? createMockOfflineNT3(),
           preferences: preferences,
           version: '0.0.0.0',
           updateChecker: updateChecker ?? createMockUpdateChecker(),
-          layoutDownloader: layoutDownloader,
         ),
       ),
     ),
@@ -104,7 +95,7 @@ void main() {
   group('[Responsive Layout]:', () {
     final fileButton = find.widgetWithText(SubmenuButton, 'File');
     final collapsedMenu = find.widgetWithIcon(SubmenuButton, Icons.menu);
-    final title = find.text('Elastic');
+    final title = find.text('Elastic (NT3)');
     final teamNumber = find.text('Team 353');
     final latency = find.textContaining('Latency:');
 
@@ -188,7 +179,7 @@ void main() {
       await pumpDashboardPage(
         widgetTester,
         preferences,
-        ntConnection: createMockOnlineNT4(),
+        ntConnection: createMockOnlineNT3(),
       );
 
       expect(find.textContaining('Network Tables: Disconnected'), findsNothing);
@@ -206,7 +197,7 @@ void main() {
       await pumpDashboardPage(
         widgetTester,
         preferences,
-        ntConnection: createMockOnlineNT4(),
+        ntConnection: createMockOnlineNT3(),
       );
 
       final addWidget = find.widgetWithText(MenuItemButton, 'Add Widget');
@@ -300,7 +291,7 @@ void main() {
       await pumpDashboardPage(
         widgetTester,
         preferences,
-        ntConnection: createMockOnlineNT4(),
+        ntConnection: createMockOnlineNT3(),
       );
 
       final addWidget = find.widgetWithText(MenuItemButton, 'Add Widget');
@@ -370,7 +361,7 @@ void main() {
       await pumpDashboardPage(
         widgetTester,
         preferences,
-        ntConnection: createMockOnlineNT4(),
+        ntConnection: createMockOnlineNT3(),
       );
 
       final addWidget = find.widgetWithText(MenuItemButton, 'Add Widget');
@@ -430,21 +421,21 @@ void main() {
       await pumpDashboardPage(
         widgetTester,
         preferences,
-        ntConnection: createMockOnlineNT4(
+        ntConnection: createMockOnlineNT3(
           virtualTopics: [
-            NT4Topic(
+            NT3Topic(
               name: '/Non-Typed/Value 1',
-              type: NT4Type.int(),
+              type: NT3Type.double(),
               properties: {},
             ),
-            NT4Topic(
+            NT3Topic(
               name: '/Non-Typed/Value 2',
-              type: NT4Type.int(),
+              type: NT3Type.double(),
               properties: {},
             ),
-            NT4Topic(
+            NT3Topic(
               name: '/Non-Typed/Value 3',
-              type: NT4Type.int(),
+              type: NT3Type.double(),
               properties: {},
             ),
           ],
@@ -494,26 +485,26 @@ void main() {
       await pumpDashboardPage(
         widgetTester,
         preferences,
-        ntConnection: createMockOnlineNT4(
+        ntConnection: createMockOnlineNT3(
           virtualTopics: [
-            NT4Topic(
+            NT3Topic(
               name: '/Non-Registered/.type',
-              type: NT4Type.string(),
+              type: NT3Type.string(),
               properties: {},
             ),
-            NT4Topic(
+            NT3Topic(
               name: '/Non-Registered/Value 1',
-              type: NT4Type.int(),
+              type: NT3Type.double(),
               properties: {},
             ),
-            NT4Topic(
+            NT3Topic(
               name: '/Non-Registered/Value 2',
-              type: NT4Type.int(),
+              type: NT3Type.double(),
               properties: {},
             ),
-            NT4Topic(
+            NT3Topic(
               name: '/Non-Registered/Value 3',
-              type: NT4Type.int(),
+              type: NT3Type.double(),
               properties: {},
             ),
           ],
@@ -562,7 +553,7 @@ void main() {
       await pumpDashboardPage(
         widgetTester,
         preferences,
-        ntConnection: createMockOnlineNT4(),
+        ntConnection: createMockOnlineNT3(),
         size: null,
       );
 
@@ -660,754 +651,6 @@ void main() {
       await widgetTester.pumpAndSettle();
 
       expect(testBooleanInLayout, findsNothing);
-    });
-  });
-
-  group('[ElasticLib]', () {
-    group('[Remote Layouts]:', () {
-      setUp(() async {
-        SharedPreferences.setMockInitialValues({
-          PrefKeys.ipAddress: '127.0.0.1',
-          PrefKeys.layoutLocked: false,
-        });
-
-        preferences = await SharedPreferences.getInstance();
-      });
-
-      testWidgets('Shows list of layouts', (widgetTester) async {
-        Client mockClient = createHttpClient(
-          mockGetResponses: {
-            'http://127.0.0.1:5800/?format=json': Response(
-              jsonEncode(layoutFiles),
-              200,
-            ),
-          },
-        );
-
-        ElasticLayoutDownloader layoutDownloader = ElasticLayoutDownloader(
-          mockClient,
-        );
-
-        await pumpDashboardPage(
-          widgetTester,
-          preferences,
-          ntConnection: createMockOnlineNT4(),
-          layoutDownloader: layoutDownloader,
-        );
-
-        expect(find.text('File'), findsOneWidget);
-        await widgetTester.tap(find.text('File'));
-        await widgetTester.pumpAndSettle();
-
-        expect(find.text('Download From Robot'), findsOneWidget);
-        await widgetTester.tap(find.text('Download From Robot'));
-        await widgetTester.pumpAndSettle();
-
-        expect(find.text('Select Layout'), findsOneWidget);
-        expect(find.byType(DialogDropdownChooser<String>), findsOneWidget);
-
-        await widgetTester.tap(find.byType(DialogDropdownChooser<String>));
-        await widgetTester.pumpAndSettle();
-
-        expect(find.text('elastic-layout 1'), findsOneWidget);
-        expect(find.text('elastic-layout 2'), findsOneWidget);
-      });
-
-      group('Download layout', () {
-        testWidgets('shows help text', (widgetTester) async {
-          Client mockClient = createHttpClient(
-            mockGetResponses: {
-              'http://127.0.0.1:5800/?format=json': Response(
-                jsonEncode(layoutFiles),
-                200,
-              ),
-            },
-          );
-
-          ElasticLayoutDownloader layoutDownloader = ElasticLayoutDownloader(
-            mockClient,
-          );
-
-          await pumpDashboardPage(
-            widgetTester,
-            preferences,
-            ntConnection: createMockOnlineNT4(),
-            layoutDownloader: layoutDownloader,
-          );
-
-          expect(find.text('File'), findsOneWidget);
-          await widgetTester.tap(find.text('File'));
-          await widgetTester.pumpAndSettle();
-
-          expect(find.text('Download From Robot'), findsOneWidget);
-          await widgetTester.tap(find.text('Download From Robot'));
-          await widgetTester.pumpAndSettle();
-
-          expect(find.textContaining('Keeps existing tabs'), findsNothing);
-
-          final helpButton = find.byIcon(Icons.help_outline);
-
-          expect(helpButton, findsOneWidget);
-          await widgetTester.ensureVisible(helpButton);
-          await widgetTester.tap(helpButton);
-          await widgetTester.pumpAndSettle();
-
-          expect(find.textContaining('Keeps existing tabs'), findsOneWidget);
-        });
-
-        testWidgets('overwrite mode', (widgetTester) async {
-          Client mockClient = createHttpClient(
-            mockGetResponses: {
-              'http://127.0.0.1:5800/?format=json': Response(
-                jsonEncode(layoutFiles),
-                200,
-              ),
-              'http://127.0.0.1:5800/${Uri.encodeComponent('elastic-layout 1.json')}':
-                  Response(jsonEncode(layoutOne), 200),
-            },
-          );
-
-          ElasticLayoutDownloader layoutDownloader = ElasticLayoutDownloader(
-            mockClient,
-          );
-
-          SharedPreferences.setMockInitialValues({
-            PrefKeys.layout: jsonEncode({
-              'version': 1.0,
-              'grid_size': 128.0,
-              'tabs': [
-                {
-                  'name': 'Test Tab',
-                  'grid_layout': {
-                    'layouts': [],
-                    'containers': [
-                      {
-                        'title': 'Blocking Widget',
-                        'x': 384.0,
-                        'y': 128.0,
-                        'width': 256.0,
-                        'height': 256.0,
-                        'type': 'Text Display',
-                        'properties': {
-                          'topic': '/Test Tab/Blocking Widget',
-                          'period': 0.06,
-                        },
-                      },
-                    ],
-                  },
-                },
-              ],
-            }),
-            PrefKeys.ipAddress: '127.0.0.1',
-          });
-
-          SharedPreferences preferences = await SharedPreferences.getInstance();
-
-          await pumpDashboardPage(
-            widgetTester,
-            preferences,
-            ntConnection: createMockOnlineNT4(),
-            layoutDownloader: layoutDownloader,
-          );
-
-          expect(find.text('File'), findsOneWidget);
-          await widgetTester.tap(find.text('File'));
-          await widgetTester.pumpAndSettle();
-
-          expect(find.text('Download From Robot'), findsOneWidget);
-          await widgetTester.tap(find.text('Download From Robot'));
-          await widgetTester.pumpAndSettle();
-
-          expect(find.text('Select Layout'), findsOneWidget);
-          expect(find.byType(DialogDropdownChooser<String>), findsOneWidget);
-
-          await widgetTester.tap(find.byType(DialogDropdownChooser<String>));
-          await widgetTester.pumpAndSettle();
-
-          expect(find.text('elastic-layout 1'), findsOneWidget);
-
-          await widgetTester.tap(find.text('elastic-layout 1'));
-          await widgetTester.pumpAndSettle();
-
-          expect(find.text('Download Mode'), findsOneWidget);
-          expect(
-            find.byType(DialogDropdownChooser<LayoutDownloadMode>),
-            findsOneWidget,
-          );
-          await widgetTester.tap(
-            find.byType(DialogDropdownChooser<LayoutDownloadMode>),
-          );
-          await widgetTester.pumpAndSettle();
-
-          expect(find.text('Overwrite'), findsNWidgets(2));
-          await widgetTester.tap(find.text('Overwrite').last);
-          await widgetTester.pumpAndSettle();
-
-          expect(find.text('Download'), findsOneWidget);
-          await widgetTester.tap(find.text('Download'));
-          await widgetTester.pump(Duration.zero);
-
-          expect(
-            find.widgetWithText(
-              ElegantNotification,
-              'Successfully Downloaded Layout',
-            ),
-            findsOneWidget,
-          );
-          expect(
-            find.textContaining('1 tabs were overwritten'),
-            findsOneWidget,
-          );
-
-          await widgetTester.pumpAndSettle();
-
-          expect(find.text('Test Tab'), findsOneWidget);
-          await widgetTester.tap(find.text('Test Tab'));
-          await widgetTester.pumpAndSettle();
-
-          expect(find.text('Blocking Widget'), findsNothing);
-          expect(find.byType(Gyro), findsNWidgets(2));
-        });
-
-        group('merge mode', () {
-          testWidgets('without merges', (widgetTester) async {
-            Client mockClient = createHttpClient(
-              mockGetResponses: {
-                'http://127.0.0.1:5800/?format=json': Response(
-                  jsonEncode(layoutFiles),
-                  200,
-                ),
-                'http://127.0.0.1:5800/${Uri.encodeComponent('elastic-layout 1.json')}':
-                    Response(jsonEncode(layoutOne), 200),
-              },
-            );
-
-            ElasticLayoutDownloader layoutDownloader = ElasticLayoutDownloader(
-              mockClient,
-            );
-
-            await pumpDashboardPage(
-              widgetTester,
-              preferences,
-              ntConnection: createMockOnlineNT4(),
-              layoutDownloader: layoutDownloader,
-            );
-
-            expect(find.text('File'), findsOneWidget);
-            await widgetTester.tap(find.text('File'));
-            await widgetTester.pumpAndSettle();
-
-            expect(find.text('Download From Robot'), findsOneWidget);
-            await widgetTester.tap(find.text('Download From Robot'));
-            await widgetTester.pumpAndSettle();
-
-            expect(find.text('Select Layout'), findsOneWidget);
-            expect(find.byType(DialogDropdownChooser<String>), findsOneWidget);
-
-            await widgetTester.tap(find.byType(DialogDropdownChooser<String>));
-            await widgetTester.pumpAndSettle();
-
-            expect(find.text('elastic-layout 1'), findsOneWidget);
-
-            await widgetTester.tap(find.text('elastic-layout 1'));
-            await widgetTester.pumpAndSettle();
-
-            expect(find.text('Download'), findsOneWidget);
-            await widgetTester.tap(find.text('Download'));
-            await widgetTester.pump(Duration.zero);
-
-            expect(
-              find.widgetWithText(
-                ElegantNotification,
-                'Successfully Downloaded Layout',
-              ),
-              findsOneWidget,
-            );
-
-            await widgetTester.pumpAndSettle();
-
-            expect(find.text('Test Tab'), findsOneWidget);
-            await widgetTester.tap(find.text('Test Tab'));
-            await widgetTester.pumpAndSettle();
-
-            expect(find.byType(Gyro), findsNWidgets(2));
-          });
-        });
-
-        testWidgets('with merges', (widgetTester) async {
-          Client mockClient = createHttpClient(
-            mockGetResponses: {
-              'http://127.0.0.1:5800/?format=json': Response(
-                jsonEncode(layoutFiles),
-                200,
-              ),
-              'http://127.0.0.1:5800/${Uri.encodeComponent('elastic-layout 1.json')}':
-                  Response(jsonEncode(layoutOne), 200),
-            },
-          );
-
-          ElasticLayoutDownloader layoutDownloader = ElasticLayoutDownloader(
-            mockClient,
-          );
-
-          SharedPreferences.setMockInitialValues({
-            PrefKeys.layout: jsonEncode({
-              'version': 1.0,
-              'grid_size': 128.0,
-              'tabs': [
-                {
-                  'name': 'Test Tab',
-                  'grid_layout': {
-                    'layouts': [],
-                    'containers': [
-                      {
-                        'title': 'Blocking Widget',
-                        'x': 384.0,
-                        'y': 128.0,
-                        'width': 256.0,
-                        'height': 256.0,
-                        'type': 'Text Display',
-                        'properties': {
-                          'topic': '/Test Tab/Blocking Widget',
-                          'period': 0.06,
-                        },
-                      },
-                    ],
-                  },
-                },
-              ],
-            }),
-            PrefKeys.ipAddress: '127.0.0.1',
-          });
-
-          SharedPreferences preferences = await SharedPreferences.getInstance();
-
-          await pumpDashboardPage(
-            widgetTester,
-            preferences,
-            ntConnection: createMockOnlineNT4(),
-            layoutDownloader: layoutDownloader,
-          );
-
-          expect(find.text('File'), findsOneWidget);
-          await widgetTester.tap(find.text('File'));
-          await widgetTester.pumpAndSettle();
-
-          expect(find.text('Download From Robot'), findsOneWidget);
-          await widgetTester.tap(find.text('Download From Robot'));
-          await widgetTester.pumpAndSettle();
-
-          expect(find.text('Select Layout'), findsOneWidget);
-          expect(find.byType(DialogDropdownChooser<String>), findsOneWidget);
-
-          await widgetTester.tap(find.byType(DialogDropdownChooser<String>));
-          await widgetTester.pumpAndSettle();
-
-          expect(find.text('elastic-layout 1'), findsOneWidget);
-
-          await widgetTester.tap(find.text('elastic-layout 1'));
-          await widgetTester.pumpAndSettle();
-
-          expect(find.text('Download Mode'), findsOneWidget);
-          expect(
-            find.byType(DialogDropdownChooser<LayoutDownloadMode>),
-            findsOneWidget,
-          );
-          await widgetTester.tap(
-            find.byType(DialogDropdownChooser<LayoutDownloadMode>),
-          );
-          await widgetTester.pumpAndSettle();
-
-          expect(find.text('Merge'), findsOneWidget);
-          await widgetTester.tap(find.text('Merge'));
-          await widgetTester.pumpAndSettle();
-
-          expect(find.text('Download'), findsOneWidget);
-          await widgetTester.tap(find.text('Download'));
-          await widgetTester.pump(Duration.zero);
-
-          expect(
-            find.widgetWithText(
-              ElegantNotification,
-              'Successfully Downloaded Layout',
-            ),
-            findsOneWidget,
-          );
-
-          await widgetTester.pumpAndSettle();
-
-          expect(find.text('Test Tab'), findsOneWidget);
-          await widgetTester.tap(find.text('Test Tab'));
-          await widgetTester.pumpAndSettle();
-
-          expect(find.text('Blocking Widget'), findsOneWidget);
-          expect(find.byType(Gyro), findsOneWidget);
-        });
-      });
-      testWidgets('reload mode', (widgetTester) async {
-        Client mockClient = createHttpClient(
-          mockGetResponses: {
-            'http://127.0.0.1:5800/?format=json': Response(
-              jsonEncode(layoutFiles),
-              200,
-            ),
-            'http://127.0.0.1:5800/${Uri.encodeComponent('elastic-layout 1.json')}':
-                Response(jsonEncode(layoutOne), 200),
-          },
-        );
-
-        ElasticLayoutDownloader layoutDownloader = ElasticLayoutDownloader(
-          mockClient,
-        );
-
-        await pumpDashboardPage(
-          widgetTester,
-          preferences,
-          ntConnection: createMockOnlineNT4(),
-          layoutDownloader: layoutDownloader,
-        );
-
-        expect(find.text('File'), findsOneWidget);
-        await widgetTester.tap(find.text('File'));
-        await widgetTester.pumpAndSettle();
-
-        expect(find.text('Download From Robot'), findsOneWidget);
-        await widgetTester.tap(find.text('Download From Robot'));
-        await widgetTester.pumpAndSettle();
-
-        expect(find.text('Select Layout'), findsOneWidget);
-        expect(find.byType(DialogDropdownChooser<String>), findsOneWidget);
-
-        await widgetTester.tap(find.byType(DialogDropdownChooser<String>));
-        await widgetTester.pumpAndSettle();
-
-        expect(find.text('elastic-layout 1'), findsOneWidget);
-
-        await widgetTester.tap(find.text('elastic-layout 1'));
-        await widgetTester.pumpAndSettle();
-
-        expect(find.text('Download Mode'), findsOneWidget);
-        expect(
-          find.byType(DialogDropdownChooser<LayoutDownloadMode>),
-          findsOneWidget,
-        );
-        await widgetTester.tap(
-          find.byType(DialogDropdownChooser<LayoutDownloadMode>),
-        );
-        await widgetTester.pumpAndSettle();
-
-        expect(find.text('Full Reload'), findsOneWidget);
-        await widgetTester.tap(find.text('Full Reload'));
-        await widgetTester.pumpAndSettle();
-
-        expect(find.text('Download'), findsOneWidget);
-        await widgetTester.tap(find.text('Download'));
-        await widgetTester.pump(Duration.zero);
-
-        expect(
-          find.widgetWithText(
-            ElegantNotification,
-            'Successfully Downloaded Layout',
-          ),
-          findsOneWidget,
-        );
-
-        await widgetTester.pumpAndSettle();
-
-        expect(find.text('Teleoperated'), findsNothing);
-        expect(find.text('Autonomous'), findsNothing);
-        expect(find.text('Test Tab'), findsOneWidget);
-      });
-
-      group('Shows error when', () {
-        testWidgets('network tables is disconnected', (widgetTester) async {
-          Client mockClient = createHttpClient();
-
-          ElasticLayoutDownloader layoutDownloader = ElasticLayoutDownloader(
-            mockClient,
-          );
-
-          await pumpDashboardPage(
-            widgetTester,
-            preferences,
-            layoutDownloader: layoutDownloader,
-          );
-
-          expect(find.text('File'), findsOneWidget);
-          await widgetTester.tap(find.text('File'));
-          await widgetTester.pumpAndSettle();
-
-          expect(find.text('Download From Robot'), findsOneWidget);
-          await widgetTester.tap(find.text('Download From Robot'));
-          await widgetTester.pump(Duration.zero);
-          await widgetTester.pump(Duration.zero);
-
-          expect(
-            find.widgetWithText(
-              ElegantNotification,
-              'Cannot fetch remote layouts while disconnected from the robot',
-            ),
-            findsOneWidget,
-          );
-        });
-
-        testWidgets('layout fetching is not a json', (widgetTester) async {
-          Client mockClient = createHttpClient(
-            mockGetResponses: {
-              'http://127.0.0.1:5800/?format=json': Response('[1, 2, 3]', 200),
-            },
-          );
-
-          ElasticLayoutDownloader layoutDownloader = ElasticLayoutDownloader(
-            mockClient,
-          );
-
-          await pumpDashboardPage(
-            widgetTester,
-            preferences,
-            ntConnection: createMockOnlineNT4(),
-            layoutDownloader: layoutDownloader,
-          );
-
-          expect(find.text('File'), findsOneWidget);
-          await widgetTester.tap(find.text('File'));
-          await widgetTester.pumpAndSettle();
-
-          expect(find.text('Download From Robot'), findsOneWidget);
-          await widgetTester.tap(find.text('Download From Robot'));
-          await widgetTester.pump(Duration.zero);
-          await widgetTester.pump(Duration.zero);
-
-          expect(
-            find.widgetWithText(
-              ElegantNotification,
-              'Response was not a json object',
-            ),
-            findsOneWidget,
-          );
-        });
-
-        testWidgets('layout json does not list files', (widgetTester) async {
-          Client mockClient = createHttpClient(
-            mockGetResponses: {
-              'http://127.0.0.1:5800/?format=json': Response('{}', 200),
-            },
-          );
-
-          ElasticLayoutDownloader layoutDownloader = ElasticLayoutDownloader(
-            mockClient,
-          );
-
-          await pumpDashboardPage(
-            widgetTester,
-            preferences,
-            ntConnection: createMockOnlineNT4(),
-            layoutDownloader: layoutDownloader,
-          );
-
-          expect(find.text('File'), findsOneWidget);
-          await widgetTester.tap(find.text('File'));
-          await widgetTester.pumpAndSettle();
-
-          expect(find.text('Download From Robot'), findsOneWidget);
-          await widgetTester.tap(find.text('Download From Robot'));
-          await widgetTester.pump(Duration.zero);
-          await widgetTester.pump(Duration.zero);
-
-          expect(
-            find.widgetWithText(
-              ElegantNotification,
-              'Response json does not contain files list',
-            ),
-            findsOneWidget,
-          );
-        });
-
-        testWidgets('layout json has empty files list', (widgetTester) async {
-          Client mockClient = createHttpClient(
-            mockGetResponses: {
-              'http://127.0.0.1:5800/?format=json': Response(
-                jsonEncode({'files': []}),
-                200,
-              ),
-            },
-          );
-
-          ElasticLayoutDownloader layoutDownloader = ElasticLayoutDownloader(
-            mockClient,
-          );
-
-          await pumpDashboardPage(
-            widgetTester,
-            preferences,
-            ntConnection: createMockOnlineNT4(),
-            layoutDownloader: layoutDownloader,
-          );
-
-          expect(find.text('File'), findsOneWidget);
-          await widgetTester.tap(find.text('File'));
-          await widgetTester.pumpAndSettle();
-
-          expect(find.text('Download From Robot'), findsOneWidget);
-          await widgetTester.tap(find.text('Download From Robot'));
-          await widgetTester.pump(Duration.zero);
-          await widgetTester.pump(Duration.zero);
-
-          expect(
-            find.widgetWithText(
-              ElegantNotification,
-              'No layouts were found, ensure a valid layout json file is placed in the root directory of your deploy directory.',
-            ),
-            findsOneWidget,
-          );
-        });
-
-        testWidgets('selected file was not found', (widgetTester) async {
-          Client mockClient = createHttpClient(
-            mockGetResponses: {
-              'http://127.0.0.1:5800/?format=json': Response(
-                jsonEncode(layoutFiles),
-                200,
-              ),
-              'http://127.0.0.1:5800/${Uri.encodeComponent('elastic-layout 1.json')}':
-                  Response('', 404),
-            },
-          );
-
-          ElasticLayoutDownloader layoutDownloader = ElasticLayoutDownloader(
-            mockClient,
-          );
-
-          await pumpDashboardPage(
-            widgetTester,
-            preferences,
-            ntConnection: createMockOnlineNT4(),
-            layoutDownloader: layoutDownloader,
-          );
-
-          expect(find.text('File'), findsOneWidget);
-          await widgetTester.tap(find.text('File'));
-          await widgetTester.pumpAndSettle();
-
-          expect(find.text('Download From Robot'), findsOneWidget);
-          await widgetTester.tap(find.text('Download From Robot'));
-          await widgetTester.pumpAndSettle();
-
-          expect(find.text('Select Layout'), findsOneWidget);
-          expect(find.byType(DialogDropdownChooser<String>), findsOneWidget);
-
-          await widgetTester.tap(find.byType(DialogDropdownChooser<String>));
-          await widgetTester.pumpAndSettle();
-
-          expect(find.text('elastic-layout 1'), findsOneWidget);
-
-          await widgetTester.tap(find.text('elastic-layout 1'));
-          await widgetTester.pumpAndSettle();
-
-          expect(find.text('Download'), findsOneWidget);
-          await widgetTester.tap(find.text('Download'));
-          await widgetTester.pump(Duration.zero);
-          await widgetTester.pump(Duration.zero);
-
-          expect(
-            find.widgetWithText(
-              ElegantNotification,
-              'File "elastic-layout 1.json" was not found',
-            ),
-            findsOneWidget,
-          );
-        });
-      });
-    });
-    group('[Tab Selection]:', () {
-      testWidgets('Passing in tab indexes', (widgetTester) async {
-        MockNTConnection ntConnection = createMockOnlineNT4(
-          virtualTopics: [
-            NT4Topic(
-              name: '/Elastic/SelectedTab',
-              type: NT4Type.string(),
-              properties: {},
-            ),
-          ],
-        );
-
-        await pumpDashboardPage(
-          widgetTester,
-          preferences,
-          ntConnection: ntConnection,
-        );
-
-        final editableTabBar = find.byType(EditableTabBar);
-
-        expect(editableTabBar, findsOneWidget);
-
-        editableTabBarWidget() =>
-            (editableTabBar.evaluate().first.widget as EditableTabBar);
-
-        ntConnection.updateDataFromTopicName('/Elastic/SelectedTab', '1');
-
-        await widgetTester.pumpAndSettle();
-
-        expect(editableTabBarWidget().currentIndex, 1);
-
-        ntConnection.updateDataFromTopicName('/Elastic/SelectedTab', '10');
-
-        await widgetTester.pumpAndSettle();
-
-        expect(
-          editableTabBarWidget().currentIndex,
-          1,
-          reason:
-              'Selected tab should not change since tab index is out of range',
-        );
-      });
-
-      testWidgets('Passing in tab names', (widgetTester) async {
-        MockNTConnection ntConnection = createMockOnlineNT4(
-          virtualTopics: [
-            NT4Topic(
-              name: '/Elastic/SelectedTab',
-              type: NT4Type.string(),
-              properties: {},
-            ),
-          ],
-        );
-
-        await pumpDashboardPage(
-          widgetTester,
-          preferences,
-          ntConnection: ntConnection,
-        );
-
-        final editableTabBar = find.byType(EditableTabBar);
-
-        expect(editableTabBar, findsOneWidget);
-
-        editableTabBarWidget() =>
-            (editableTabBar.evaluate().first.widget as EditableTabBar);
-
-        ntConnection.updateDataFromTopicName(
-          '/Elastic/SelectedTab',
-          'Autonomous',
-        );
-
-        await widgetTester.pumpAndSettle();
-
-        expect(editableTabBarWidget().currentIndex, 1);
-
-        ntConnection.updateDataFromTopicName(
-          '/Elastic/SelectedTab',
-          'Random Tab',
-        );
-
-        await widgetTester.pumpAndSettle();
-
-        expect(
-          editableTabBarWidget().currentIndex,
-          1,
-          reason: 'Selected tab should not change since tab name doesnt exist',
-        );
-      });
     });
   });
 
@@ -1965,7 +1208,7 @@ void main() {
         PrefKeys.teamNumber: 353,
       });
 
-      MockNTConnection ntConnection = createMockOfflineNT4();
+      MockNTConnection ntConnection = createMockOfflineNT3();
 
       await pumpDashboardPage(
         widgetTester,
@@ -2042,100 +1285,6 @@ void main() {
         IPAddressMode.localhost.id,
       );
       expect(preferences.getString(PrefKeys.ipAddress), '0.0.0.0');
-    });
-  });
-
-  group('[Notifications]:', () {
-    testWidgets('Robot Notifications', (widgetTester) async {
-      final Map<String, dynamic> data = {
-        'title': 'Robot Notification Title',
-        'description': 'Robot Notification Description',
-        'level': 'INFO',
-        'displayTime': 350,
-        'width': 300.0,
-        'height': 300.0,
-      };
-
-      MockNTConnection connection = createMockOnlineNT4(
-        virtualTopics: [
-          NT4Topic(
-            name: '/Elastic/RobotNotifications',
-            type: NT4Type.string(),
-            properties: {},
-          ),
-        ],
-        virtualValues: {'/Elastic/RobotNotifications': jsonEncode(data)},
-        serverTime: 5000000,
-      );
-      MockNT4Subscription mockSub = MockNT4Subscription();
-
-      List<Function(Object?, int)> listeners = [];
-      when(mockSub.listen(any)).thenAnswer((realInvocation) {
-        listeners.add(realInvocation.positionalArguments[0]);
-        mockSub.updateValue(jsonEncode(data), 0);
-      });
-
-      when(mockSub.updateValue(any, any)).thenAnswer((invoc) {
-        for (var value in listeners) {
-          value.call(
-            invoc.positionalArguments[0],
-            invoc.positionalArguments[1],
-          );
-        }
-      });
-
-      when(
-        connection.subscribeAll(any, any),
-      ).thenAnswer((realInvocation) => mockSub);
-
-      final notificationWidget = find.widgetWithText(
-        ElegantNotification,
-        data['title'],
-      );
-
-      await pumpDashboardPage(
-        widgetTester,
-        preferences,
-        ntConnection: connection,
-      );
-
-      expect(notificationWidget, findsNothing);
-
-      connection
-          .subscribeAll('/Elastic/RobotNotifications', 0.2)
-          .updateValue(jsonEncode(data), 1);
-
-      await widgetTester.pump();
-
-      expect(notificationWidget, findsOneWidget);
-
-      await widgetTester.pumpAndSettle();
-
-      expect(notificationWidget, findsNothing);
-
-      connection
-          .subscribeAll('/Elastic/RobotNotifications', 0.2)
-          .updateValue(jsonEncode(data), 1);
-    });
-
-    testWidgets('Update Notification', (widgetTester) async {
-      await pumpDashboardPage(
-        widgetTester,
-        preferences,
-        updateChecker: createMockUpdateChecker(
-          updateAvailable: true,
-          latestVersion: '2025.0.1',
-        ),
-      );
-
-      final notificationWidget = find.widgetWithText(
-        ElegantNotification,
-        'Version 2025.0.1 Available',
-      );
-      final notificationIcon = find.byIcon(Icons.update);
-
-      expect(notificationWidget, findsOneWidget);
-      expect(notificationIcon, findsOneWidget);
     });
   });
 }

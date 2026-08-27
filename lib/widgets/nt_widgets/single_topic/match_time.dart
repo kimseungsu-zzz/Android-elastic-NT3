@@ -50,7 +50,6 @@ class MatchTimeModel extends SingleTopicNTWidgetModel {
     String timeDisplayMode = 'Minutes and Seconds',
     int redStartTime = 20,
     int yellowStartTime = 30,
-    super.ntStructMeta,
     super.dataType,
     super.period,
   }) : _timeDisplayMode = timeDisplayMode,

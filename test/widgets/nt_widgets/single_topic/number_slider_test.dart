@@ -5,8 +5,8 @@ import 'package:geekyants_flutter_gauges/geekyants_flutter_gauges.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:elastic_dashboard/services/nt4_client.dart';
-import 'package:elastic_dashboard/services/nt4_type.dart';
+import 'package:elastic_dashboard/services/nt3_client.dart';
+import 'package:elastic_dashboard/services/nt3_type.dart';
 import 'package:elastic_dashboard/services/nt_connection.dart';
 import 'package:elastic_dashboard/services/nt_widget_registry.dart';
 import 'package:elastic_dashboard/widgets/dialog_widgets/dialog_text_input.dart';
@@ -22,7 +22,7 @@ void main() {
 
   final Map<String, dynamic> numberSliderJson = {
     'topic': 'Test/Double Value',
-    'data_type': NT4Type.double().serialize(),
+    'data_type': NT3Type.double().serialize(),
     'period': 0.100,
     'min_value': -5.0,
     'max_value': 5.0,
@@ -37,11 +37,11 @@ void main() {
     SharedPreferences.setMockInitialValues({});
     preferences = await SharedPreferences.getInstance();
 
-    ntConnection = createMockOnlineNT4(
+    ntConnection = createMockOnlineNT3(
       virtualTopics: [
-        NT4Topic(
+        NT3Topic(
           name: 'Test/Double Value',
-          type: NT4Type.double(),
+          type: NT3Type.double(),
           properties: {},
         ),
       ],
@@ -87,9 +87,8 @@ void main() {
     NumberSliderModel numberSliderModel = NumberSliderModel(
       ntConnection: ntConnection,
       preferences: preferences,
-      ntStructMeta: null,
       topic: 'Test/Double Value',
-      dataType: NT4Type.double(),
+      dataType: NT3Type.double(),
       period: 0.100,
       minValue: -5.0,
       maxValue: 5.0,
@@ -164,9 +163,8 @@ void main() {
     NumberSliderModel numberSliderModel = NumberSliderModel(
       ntConnection: ntConnection,
       preferences: preferences,
-      ntStructMeta: null,
       topic: 'Test/Double Value',
-      dataType: NT4Type.double(),
+      dataType: NT3Type.double(),
       period: 0.100,
       minValue: -5.0,
       maxValue: 5.0,
@@ -220,9 +218,13 @@ void main() {
   testWidgets('Number slider widget test integer', (widgetTester) async {
     FlutterError.onError = ignoreOverflowErrors;
 
-    NTConnection ntConnection = createMockOnlineNT4(
+    NTConnection ntConnection = createMockOnlineNT3(
       virtualTopics: [
-        NT4Topic(name: 'Test/Int Value', type: NT4Type.int(), properties: {}),
+        NT3Topic(
+          name: 'Test/Int Value',
+          type: NT3Type.double(),
+          properties: {},
+        ),
       ],
       virtualValues: {'Test/Int Value': -1},
     );
@@ -230,9 +232,8 @@ void main() {
     NumberSliderModel numberSliderModel = NumberSliderModel(
       ntConnection: ntConnection,
       preferences: preferences,
-      ntStructMeta: null,
       topic: 'Test/Int Value',
-      dataType: NT4Type.int(),
+      dataType: NT3Type.double(),
       period: 0.100,
       minValue: -5.0,
       maxValue: 5.0,
@@ -253,8 +254,8 @@ void main() {
 
     await widgetTester.pumpAndSettle();
 
-    expect(find.text('-1.00'), findsNothing);
-    expect(find.text('-1'), findsOneWidget);
+    expect(find.text('-1.00'), findsOneWidget);
+    expect(find.text('-1'), findsNothing);
     expect(find.byType(LinearGauge), findsOneWidget);
     expect(find.byType(Pointer), findsOneWidget);
 
@@ -285,7 +286,7 @@ void main() {
 
     expect(
       ntConnection.getLastAnnouncedValue('Test/Int Value').runtimeType,
-      int,
+      double,
     );
   });
 
@@ -295,9 +296,8 @@ void main() {
     NumberSliderModel numberSliderModel = NumberSliderModel(
       ntConnection: ntConnection,
       preferences: preferences,
-      ntStructMeta: null,
       topic: 'Test/Double Value',
-      dataType: NT4Type.double(),
+      dataType: NT3Type.double(),
       period: 0.100,
       minValue: -5.0,
       maxValue: 5.0,

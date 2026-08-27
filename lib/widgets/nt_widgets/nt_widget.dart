@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:dot_cast/dot_cast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:elastic_dashboard/services/nt4_client.dart';
-import 'package:elastic_dashboard/services/nt4_type.dart';
+import 'package:elastic_dashboard/services/nt3_client.dart';
+import 'package:elastic_dashboard/services/nt3_type.dart';
 import 'package:elastic_dashboard/services/nt_connection.dart';
 import 'package:elastic_dashboard/services/settings.dart';
 import 'package:elastic_dashboard/widgets/nt_widgets/multi_topic/combo_box_chooser.dart';
@@ -91,17 +91,15 @@ class SingleTopicNTWidgetModel extends NTWidgetModel {
   @override
   String get type => _typeOverride;
 
-  NT4Type? dataType;
+  NT3Type? dataType;
 
-  NT4Subscription? subscription;
-  NT4StructMeta? ntStructMeta;
-  NT4Topic? ntTopic;
+  NT3Subscription? subscription;
+  NT3Topic? ntTopic;
 
   SingleTopicNTWidgetModel({
     required super.ntConnection,
     required super.preferences,
     required super.topic,
-    this.ntStructMeta,
     this.dataType,
     super.period,
   }) : super() {
@@ -113,7 +111,6 @@ class SingleTopicNTWidgetModel extends NTWidgetModel {
     required super.preferences,
     required String type,
     required super.topic,
-    this.ntStructMeta,
     this.dataType,
     super.period,
   }) : _typeOverride = type,
@@ -128,12 +125,7 @@ class SingleTopicNTWidgetModel extends NTWidgetModel {
     required String type,
   }) : _typeOverride = type,
        super.fromJson(jsonData: jsonData) {
-    dataType = NT4Type.parseNullable(tryCast(jsonData['data_type']));
-
-    Map<String, dynamic>? structMetaJson = jsonData['struct_meta'];
-    if (structMetaJson != null) {
-      ntStructMeta = NT4StructMeta.fromJson(structMetaJson);
-    }
+    dataType = NT3Type.parseNullable(tryCast(jsonData['data_type']));
 
     init();
   }
@@ -143,12 +135,7 @@ class SingleTopicNTWidgetModel extends NTWidgetModel {
     required super.preferences,
     required Map<String, dynamic> jsonData,
   }) : super.fromJson(jsonData: jsonData) {
-    dataType = NT4Type.parseNullable(tryCast(jsonData['data_type']));
-
-    Map<String, dynamic>? structMetaJson = jsonData['struct_meta'];
-    if (structMetaJson != null) {
-      ntStructMeta = NT4StructMeta.fromJson(structMetaJson);
-    }
+    dataType = NT3Type.parseNullable(tryCast(jsonData['data_type']));
 
     init();
   }
@@ -156,24 +143,23 @@ class SingleTopicNTWidgetModel extends NTWidgetModel {
   @override
   @mustCallSuper
   Map<String, dynamic> toJson() {
-    if (dataType == null && ntConnection.isNT4Connected) {
+    if (dataType == null && ntConnection.isNT3Connected) {
       createTopicIfNull();
-      dataType = ntStructMeta?.type ?? ntTopic?.type ?? dataType;
+      dataType = ntTopic?.type ?? dataType;
     }
 
     return {
       ...super.toJson(),
       'data_type': ?dataType?.serialize(),
-      'struct_meta': ?ntStructMeta?.toJson(),
     };
   }
 
   @override
   List<String> getAvailableDisplayTypes() {
     createTopicIfNull();
-    dataType = ntStructMeta?.type ?? ntTopic?.type ?? dataType;
+    dataType = ntTopic?.type ?? dataType;
 
-    NT4DataType? ntDataType = dataType?.dataType;
+    NT3DataType? ntDataType = dataType?.dataType;
 
     if (ntDataType == null || dataType == null) {
       return [type];
@@ -183,7 +169,7 @@ class SingleTopicNTWidgetModel extends NTWidgetModel {
 
     // Add all type-specific widgets first
 
-    if (ntDataType == NT4DataType.boolean) {
+    if (ntDataType == NT3DataType.boolean) {
       availableTypes.addAll([
         BooleanBox.widgetType,
         ToggleSwitch.widgetType,
@@ -203,7 +189,7 @@ class SingleTopicNTWidgetModel extends NTWidgetModel {
     }
 
     // Special color widgets for string and string arrays
-    if (ntDataType == NT4DataType.string) {
+    if (ntDataType == NT3DataType.string) {
       if (dataType!.isArray) {
         availableTypes.add(MultiColorView.widgetType);
       } else {
@@ -229,10 +215,7 @@ class SingleTopicNTWidgetModel extends NTWidgetModel {
   void init() async {
     subscription = ntConnection.subscribeWithOptions(
       topic,
-      NT4SubscriptionOptions(
-        periodicRateSeconds: period,
-        structMeta: ntStructMeta,
-      ),
+      NT3SubscriptionOptions(periodicRateSeconds: period),
     );
   }
 
@@ -256,10 +239,7 @@ class SingleTopicNTWidgetModel extends NTWidgetModel {
     if (subscription == null) {
       subscription = ntConnection.subscribeWithOptions(
         topic,
-        NT4SubscriptionOptions(
-          periodicRateSeconds: period,
-          structMeta: ntStructMeta,
-        ),
+        NT3SubscriptionOptions(periodicRateSeconds: period),
       );
 
       ntTopic = null;
@@ -273,30 +253,18 @@ class SingleTopicNTWidgetModel extends NTWidgetModel {
     ntConnection.unSubscribe(subscription!);
     subscription = ntConnection.subscribeWithOptions(
       topic,
-      NT4SubscriptionOptions(
-        periodicRateSeconds: period,
-        structMeta: ntStructMeta,
-      ),
+      NT3SubscriptionOptions(periodicRateSeconds: period),
     );
 
     ntTopic = null;
 
     createTopicIfNull();
     if (resetDataType) {
-      if (ntTopic == null && ntConnection.isNT4Connected) {
+      if (ntTopic == null && ntConnection.isNT3Connected) {
         dataType = null;
       } else {
-        dataType = ntStructMeta?.type ?? ntTopic?.type ?? dataType;
+        dataType = ntTopic?.type ?? dataType;
       }
-    }
-
-    // If the path of the struct has changed, we want to update its
-    // value of the struct field
-    if (ntStructMeta != null) {
-      subscription!.updateValue(
-        ntConnection.getLastAnnouncedValue(topic),
-        subscription!.timestamp,
-      );
     }
 
     refresh();
@@ -307,7 +275,7 @@ class MultiTopicNTWidgetModel extends NTWidgetModel {
   @override
   String get type => 'NTWidget';
 
-  List<NT4Subscription> get subscriptions => [];
+  List<NT3Subscription> get subscriptions => [];
 
   MultiTopicNTWidgetModel({
     required super.ntConnection,
@@ -336,14 +304,14 @@ class MultiTopicNTWidgetModel extends NTWidgetModel {
 
   @override
   void unSubscribe() {
-    for (NT4Subscription subscription in subscriptions) {
+    for (NT3Subscription subscription in subscriptions) {
       ntConnection.unSubscribe(subscription);
     }
   }
 
   @override
   void resetSubscription() {
-    for (NT4Subscription subscription in subscriptions) {
+    for (NT3Subscription subscription in subscriptions) {
       ntConnection.unSubscribe(subscription);
     }
 
