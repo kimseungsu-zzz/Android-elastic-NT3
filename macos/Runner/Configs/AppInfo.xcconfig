@@ -8,7 +8,7 @@
 PRODUCT_NAME = Elastic (NT3)
 
 // The application's bundle identifier
-PRODUCT_BUNDLE_IDENTIFIER = com.gold872.elasticDashboard
+PRODUCT_BUNDLE_IDENTIFIER = io.github.kimseungsuzzz.elasticNT3
 
 // The copyright displayed in application information
-PRODUCT_COPYRIGHT = Copyright © 2023 com.gold872. All rights reserved.
+PRODUCT_COPYRIGHT = Copyright © 2023-2026 Gold87 and contributors; 2026 kimseungsu-zzz.

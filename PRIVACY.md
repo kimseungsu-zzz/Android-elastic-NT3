@@ -1,21 +1,33 @@
 # Privacy Policy
 
-Elastic is a volunteer-run project that is owned and published by Nadav from FIRST Robotics Competition Team 353 ("Elastic"), based in the United States.
+Elastic (NT3) is an open-source, volunteer-maintained fork of Elastic
+Dashboard.
 
 ## Information We Collect
 
-Elastic does not collect data from users of the application.
+Elastic (NT3) does not include analytics, telemetry, or an application-operated
+data collection service.
 
-The Elastic application will create and store logs of application errors and user interactions on the user's system, but these logs are not shared unless it's done manually by the user.
+The application stores settings, dashboard layouts, and diagnostic logs on the
+user's device. These files are not automatically uploaded. A user may choose
+to attach them to an issue or share them for troubleshooting.
+
+The application connects directly to user-configured robot or Driver Station
+addresses on the local network. NetworkTables values remain between those
+systems unless the user separately records or shares them.
 
 ## Third-Party Data Collection
 
-The Elastic repository and documentation site are hosted by GitHub, which publishes a [privacy policy](https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement) that applies when interacting with these services.
+The source repository, issue tracker, release downloads, and update metadata
+are hosted by GitHub. GitHub's
+[privacy statement](https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement)
+applies when using those services.
 
-The Elastic application may connect to GitHub services to check for updates. These interactions are covered by the GitHub privacy policy.
-
-The documentation for Elastic is hosted on GitBook, which has a [privacy policy](https://policies.gitbook.com/privacy-and-security/statement) that applies when interacting with their services.
+The application may query this repository's public release information to
+check for updates. This can expose ordinary connection metadata, such as an IP
+address, to GitHub.
 
 ## Contact
 
-Questions about this policy can be directed to frc-elastic@outlook.com
+Questions can be submitted through the
+[Elastic (NT3) issue tracker](https://github.com/kimseungsu-zzz/elastic-NT3/issues).
