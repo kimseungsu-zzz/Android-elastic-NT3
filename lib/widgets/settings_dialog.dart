@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -14,6 +13,7 @@ import 'package:elastic_dashboard/services/ip_address_util.dart';
 import 'package:elastic_dashboard/services/nt_connection.dart';
 import 'package:elastic_dashboard/services/settings.dart';
 import 'package:elastic_dashboard/services/text_formatter_builder.dart';
+import 'package:elastic_dashboard/util/platform_util.dart';
 import 'package:elastic_dashboard/widgets/dialog_widgets/dialog_color_picker.dart';
 import 'package:elastic_dashboard/widgets/dialog_widgets/dialog_dropdown_chooser.dart';
 import 'package:elastic_dashboard/widgets/dialog_widgets/dialog_text_input.dart';
@@ -141,7 +141,7 @@ class _SettingsDialogState extends State<SettingsDialog> {
                     child: SingleChildScrollView(
                       child: ConstrainedBox(
                         constraints: BoxConstraints(
-                          maxHeight: kIsWeb ? 360 : 415,
+                          maxHeight: !isDesktopPlatform ? 360 : 415,
                         ),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.start,
@@ -406,13 +406,13 @@ class _SettingsDialogState extends State<SettingsDialog> {
         ),
         Flexible(
           flex: 3,
-          child: kIsWeb
+          child: !isDesktopPlatform
               ? _lockLayoutSwitch(context)
               : _resizeToDSSwitch(context),
         ),
       ],
     ),
-    if (!kIsWeb) ...[
+    if (isDesktopPlatform) ...[
       const SizedBox(height: 5),
       Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -570,7 +570,7 @@ class _SettingsDialogState extends State<SettingsDialog> {
               },
             ),
           ),
-          if (!kIsWeb && !Platform.isMacOS)
+          if (isDesktopPlatform && !Platform.isMacOS)
             TextButton.icon(
               onPressed: () {
                 widget.onOpenAssetsFolderPressed?.call();

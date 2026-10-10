@@ -83,6 +83,7 @@ import_sorter:
 
 flutter_launcher_icons:
   image_path: "assets/logos/logo.png"
+  android: true
   windows:
     generate: true
     icon_size: 256

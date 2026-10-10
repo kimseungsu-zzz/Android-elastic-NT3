@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -26,6 +25,7 @@ import 'package:elastic_dashboard/services/log.dart';
 import 'package:elastic_dashboard/services/nt_connection.dart';
 import 'package:elastic_dashboard/services/settings.dart';
 import 'package:elastic_dashboard/services/update_checker.dart';
+import 'package:elastic_dashboard/util/platform_util.dart';
 import 'package:elastic_dashboard/util/tab_data.dart';
 import 'package:elastic_dashboard/util/test_utils.dart';
 import 'package:elastic_dashboard/widgets/custom_appbar.dart';
@@ -431,9 +431,9 @@ class _DashboardPageState extends State<DashboardPage>
 
     model.addListener(onModelUpdate);
 
-    windowManager.addListener(this);
+    if (isDesktopPlatform) windowManager.addListener(this);
     setupUnloadHandler(() => model.hasUnsavedChanges());
-    if (!isUnitTest) {
+    if (!isUnitTest && isDesktopPlatform) {
       Future(() async => await windowManager.setPreventClose(true));
     }
 
@@ -448,7 +448,7 @@ class _DashboardPageState extends State<DashboardPage>
 
     if (showConfirmation) {
       widget.model.showWindowCloseConfirmation(context);
-      await windowManager.focus();
+      if (isDesktopPlatform) await windowManager.focus();
     } else {
       await closeWindow();
     }
@@ -457,7 +457,9 @@ class _DashboardPageState extends State<DashboardPage>
   @override
   Future<void> closeWindow() async {
     await model.saveWindowPosition();
-    await windowManager.destroy();
+    if (isDesktopPlatform) {
+      await windowManager.destroy();
+    }
     exit(0);
   }
 
@@ -477,7 +479,7 @@ class _DashboardPageState extends State<DashboardPage>
   @override
   void dispose() {
     removeUnloadHandler();
-    windowManager.removeListener(this);
+    if (isDesktopPlatform) windowManager.removeListener(this);
     model._state = null;
     model.removeListener(onModelUpdate);
     super.dispose();
@@ -678,7 +680,7 @@ class _DashboardPageState extends State<DashboardPage>
         preferences.getBool(PrefKeys.layoutLocked) ?? Defaults.layoutLocked;
 
     late final double platformWidthAdjust;
-    if (!kIsWeb) {
+    if (isDesktopPlatform) {
       if (Platform.isMacOS) {
         platformWidthAdjust = 30;
       } else if (Platform.isLinux) {

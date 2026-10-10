@@ -6,7 +6,7 @@ A desktop-focused fork of Elastic Dashboard for FRC robots that use the
 NetworkTables 3.0 protocol.
 
 The NT3 transport uses TCP port 1735. Because browsers cannot open raw TCP
-sockets, robot connectivity is supported on Windows, macOS, and Linux builds.
+sockets, robot connectivity is supported on Windows, macOS, Linux, and Android builds.
 
 [Download the latest release](https://github.com/kimseungsu-zzz/elastic-NT3/releases/latest)
 
@@ -40,6 +40,7 @@ representation. Saved layouts should therefore reference ordinary NT3 topics.
 | Windows | Supported | Yes |
 | macOS | Supported | Yes |
 | Linux | Supported | Yes |
+| Android | Supported (landscape, tablets recommended) | Yes (APK) |
 | Web | Not supported (browsers cannot open raw TCP sockets) | No |
 
 ## Build and test
@@ -55,6 +56,11 @@ flutter build windows --release
 ```
 
 Replace `windows` with `macos` or `linux` for another desktop target.
+
+For Android, run `dart run flutter_launcher_icons` once to generate the launcher
+icons, then `flutter build apk --release`. Android has no window management, so
+the custom title bar buttons, window-position memory, and "resize to Driver
+Station" are desktop-only. The device must be on the robot network.
 Additional contribution guidance is in [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## License and attribution

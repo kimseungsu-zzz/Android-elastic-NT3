@@ -1,9 +1,9 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:titlebar_buttons/titlebar_buttons.dart';
 
 import 'package:elastic_dashboard/services/settings.dart';
+import 'package:elastic_dashboard/util/platform_util.dart';
 
 import 'package:window_manager/window_manager.dart'
     if (dart.library.js_interop) 'package:elastic_dashboard/util/stub/window_stub.dart';
@@ -25,7 +25,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   late final Widget trailing = Row(
     mainAxisSize: MainAxisSize.min,
     children: [
-      if (!kIsWeb) ...[
+      if (isDesktopPlatform) ...[
         InkWell(
           canRequestFocus: false,
           onTap: () async => await windowManager.minimize(),
@@ -153,14 +153,14 @@ class _WindowDragArea extends StatelessWidget {
   Widget build(BuildContext context) => GestureDetector(
     behavior: HitTestBehavior.translucent,
     onPanStart: (details) {
-      if (!Settings.isWindowDraggable) {
+      if (!isDesktopPlatform || !Settings.isWindowDraggable) {
         return;
       }
 
       windowManager.startDragging();
     },
     onDoubleTap: () async {
-      if (!Settings.isWindowMaximizable) {
+      if (!isDesktopPlatform || !Settings.isWindowMaximizable) {
         return;
       }
 

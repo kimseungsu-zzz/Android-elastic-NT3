@@ -1,0 +1,13 @@
+gradle-wrapper.jar
+/gradlew
+/gradlew.bat
+/.gradle
+/captures/
+/local.properties
+GeneratedPluginRegistrant.java
+.cxx/
+
+# Remember to never publicly share your keystore.
+key.properties
+**/*.keystore
+**/*.jks

@@ -19,6 +19,7 @@ import 'package:elastic_dashboard/services/log.dart';
 import 'package:elastic_dashboard/services/nt_connection.dart';
 import 'package:elastic_dashboard/services/nt_widget_registry.dart';
 import 'package:elastic_dashboard/services/settings.dart';
+import 'package:elastic_dashboard/util/platform_util.dart';
 
 import 'package:path_provider/path_provider.dart'
     if (dart.library.js_interop) 'package:elastic_dashboard/util/stub/path_stub.dart';
@@ -102,7 +103,14 @@ void main() async {
   });
 
   await FieldImages.loadFields('assets/fields/');
-  if (!kIsWeb) {
+  if (!kIsWeb && Platform.isAndroid) {
+    await SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight,
+    ]);
+    await SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+  }
+  if (isDesktopPlatform) {
     Display primaryDisplay = await screenRetriever.getPrimaryDisplay();
     Size screenSize = primaryDisplay.visibleSize ?? primaryDisplay.size;
 

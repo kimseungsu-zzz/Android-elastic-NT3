@@ -7,6 +7,7 @@ import 'package:screen_retriever/screen_retriever.dart';
 import 'package:elastic_dashboard/pages/dashboard_page.dart';
 import 'package:elastic_dashboard/services/log.dart';
 import 'package:elastic_dashboard/services/settings.dart';
+import 'package:elastic_dashboard/util/platform_util.dart';
 
 import 'package:window_manager/window_manager.dart'
     if (dart.library.js_interop) 'package:elastic_dashboard/util/stub/window_stub.dart';
@@ -14,6 +15,8 @@ import 'package:window_manager/window_manager.dart'
 mixin DashboardPageWindow on DashboardPageViewModel {
   @override
   Future<void> saveWindowPosition() async {
+    if (!isDesktopPlatform) return;
+
     Rect bounds = await windowManager.getBounds();
 
     List<double> positionArray = [
@@ -30,6 +33,8 @@ mixin DashboardPageWindow on DashboardPageViewModel {
 
   @override
   Future<void> onDriverStationDocked(int dsHeight) async {
+    if (!isDesktopPlatform) return;
+
     Display primaryDisplay = await screenRetriever.getPrimaryDisplay();
     Size screenSize = primaryDisplay.visibleSize ?? primaryDisplay.size;
 
@@ -53,6 +58,8 @@ mixin DashboardPageWindow on DashboardPageViewModel {
 
   @override
   Future<void> onDriverStationUndocked() async {
+    if (!isDesktopPlatform) return;
+
     Settings.isWindowMaximizable = true;
     Settings.isWindowDraggable = true;
     await windowManager.setResizable(true);
