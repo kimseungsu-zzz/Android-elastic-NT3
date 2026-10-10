@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'package:collection/collection.dart';
 
@@ -37,10 +38,14 @@ class _ContextMenuListenerState extends State<ContextMenuListener> {
       longPressGlobalPosition = details.globalPosition;
       longPressLocalPosition = details.localPosition;
     },
-    onLongPress: () => widget.onContextMenuGesture(
-      longPressGlobalPosition,
-      longPressLocalPosition,
-    ),
+    onLongPress: () {
+      // Touch devices have no right click, so long press opens the menu
+      HapticFeedback.mediumImpact();
+      widget.onContextMenuGesture(
+        longPressGlobalPosition,
+        longPressLocalPosition,
+      );
+    },
     child: GestureDetector(
       behavior: widget.behavior,
       onSecondaryTapUp: (details) => widget.onContextMenuGesture(
