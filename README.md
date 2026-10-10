@@ -58,7 +58,8 @@ flutter build windows --release
 Replace `windows` with `macos` or `linux` for another desktop target.
 
 For Android, run `dart run flutter_launcher_icons` once to generate the launcher
-icons, then `flutter build apk --release`. Android has no window management, so
+icons, then `flutter build apk --release --split-per-abi --split-debug-info=build/symbols`
+(one smaller APK per CPU architecture; most devices need `arm64-v8a`). Android has no window management, so
 the custom title bar buttons, window-position memory, and "resize to Driver
 Station" are desktop-only. The device must be on the robot network.
 Additional contribution guidance is in [CONTRIBUTING.md](CONTRIBUTING.md).

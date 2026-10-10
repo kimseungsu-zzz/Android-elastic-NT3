@@ -55,7 +55,8 @@ jobs:
           - name: Android
             os: ubuntu-22.04
             platform: apk
-            output: build/app/outputs/flutter-apk/app-release.apk
+            flags: --split-per-abi --split-debug-info=build/symbols
+            output: build/app/outputs/flutter-apk/*-release.apk
             artifact: Elastic-NT3-Android
     runs-on: ${{ matrix.os }}
     steps:
@@ -76,7 +77,7 @@ jobs:
           cache: true
       - run: flutter pub get
       - run: dart run flutter_launcher_icons
-      - run: flutter build ${{ matrix.platform }} --release
+      - run: flutter build ${{ matrix.platform }} --release ${{ matrix.flags }}
       - name: Copy Windows runtime files
         if: matrix.platform == 'windows'
         run: ./.github/CopyRuntime.ps1 -OutputPath ${{ matrix.output }}
