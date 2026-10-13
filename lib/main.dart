@@ -11,6 +11,7 @@ import 'package:flex_seed_scheme/flex_seed_scheme.dart';
 import 'package:logger/logger.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:wakelock_plus/wakelock_plus.dart';
 
 import 'package:elastic_dashboard/pages/dashboard_page.dart';
 import 'package:elastic_dashboard/services/app_distributor.dart';
@@ -68,6 +69,14 @@ void main() async {
     }
   } else {
     preferences = await SharedPreferences.getInstance();
+  }
+
+  if (preferences.getBool(PrefKeys.keepScreenOn) ?? Defaults.keepScreenOn) {
+    try {
+      await WakelockPlus.enable();
+    } catch (error) {
+      logger.warning('Failed to enable wakelock', error);
+    }
   }
 
   Level logLevel =

@@ -8,6 +8,7 @@ import 'package:collection/collection.dart';
 import 'package:flex_seed_scheme/flex_seed_scheme.dart';
 import 'package:logger/logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:wakelock_plus/wakelock_plus.dart';
 
 import 'package:elastic_dashboard/services/ip_address_util.dart';
 import 'package:elastic_dashboard/services/nt_connection.dart';
@@ -441,6 +442,25 @@ class _SettingsDialogState extends State<SettingsDialog> {
 
   List<Widget> _otherSettings() => [
     const Align(alignment: Alignment.topLeft, child: Text('Other Settings')),
+    const SizedBox(height: 5),
+    Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        Flexible(
+          child: DialogToggleSwitch(
+            initialValue:
+                widget.preferences.getBool(PrefKeys.keepScreenOn) ??
+                Defaults.keepScreenOn,
+            label: 'Keep Screen On',
+            onToggle: (value) async {
+              await widget.preferences.setBool(PrefKeys.keepScreenOn, value);
+              await WakelockPlus.toggle(enable: value);
+              setState(() {});
+            },
+          ),
+        ),
+      ],
+    ),
     const SizedBox(height: 5),
     Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,

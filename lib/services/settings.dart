@@ -59,6 +59,7 @@ class Defaults {
   static const bool layoutLocked = false;
   static const bool showGrid = true;
   static const bool autoResizeToDS = false;
+  static const bool keepScreenOn = false;
   static const bool showOpenAssetsFolderWarning = true;
 
   static const double cornerRadius = 15.0;
@@ -78,6 +79,7 @@ class PrefKeys {
   static String gridSize = 'grid_size';
   static String cornerRadius = 'corner_radius';
   static String showGrid = 'show_grid';
+  static String keepScreenOn = 'keep_screen_on';
   static String autoResizeToDS = 'auto_resize_to_driver_station';
   static String rememberWindowPosition = 'remember_window_position';
   static String defaultPeriod = 'default_period';
